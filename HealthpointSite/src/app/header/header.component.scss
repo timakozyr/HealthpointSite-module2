@@ -1,0 +1,32 @@
+/*$lt-gray: #ddd;
+$background-dark: #004d40;
+$background-light: #009688;
+$background-pale: #e0f2f1;
+$background-moredark: #d3d1d1;*/
+
+
+@mixin zero-margin($pad-up-down, $pad-left-right) {
+    margin: 0px auto;
+    padding: $pad-up-down $pad-left-right;
+}
+
+.jumbotron {
+    @include zero-margin(70px,30px);
+    color:floralwhite;
+    min-height: 150px;
+}
+
+.mat-toolbar {
+    background-color: var(--primary-darker-color);
+    color: var(--text-primary-color);
+    font-family: Roboto, sans-serif;
+}
+
+.active {
+    background: var(--primary-lighter-color);
+ }
+
+ #section-to-scroll {
+    opacity: 0;
+    transform: translateY(100%);
+  }

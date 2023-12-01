@@ -1,0 +1,22 @@
+@mixin zero-margin($pad-up-down, $pad-left-right) {
+    margin: 0px auto;
+    padding: $pad-up-down $pad-left-right;
+}
+
+.footer{
+    background-color: var(--primary-darker-color);
+    color: var(--text-accent-color);
+    @include zero-margin(20px, 0px);
+    width:100%;
+}
+
+.btn-home {
+    color: var(--text-accent-color);
+}
+
+.btn-contact {
+    color: var(--text-accent-color);
+}
+
+//.btn-home {color:$lt-gray!important;}
+//.btn-contact {color:$lt-gray!important;}

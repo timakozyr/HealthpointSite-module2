@@ -1,0 +1,77 @@
+$lt-gray: #ddd;
+$background-dark: #004d40;
+$background-pale: #e0f2f1;
+/*$background-light: #009688
+$background-moredark: #d3d1d1;
+$accent-color:        #004d40;*/
+
+
+@mixin zero-margin($pad-up-down, $pad-left-right) {
+    margin: 0px auto;
+    padding: $pad-up-down $pad-left-right;
+}
+
+.jumbotron {
+    @include zero-margin(70px,30px);
+    //background: $background-dark;
+    //color:floralwhite;
+    min-height: 150px;
+}
+
+.profile-header {
+    background-color: var(--primary-darker-color);
+    color: $background-pale;
+    margin: 1%;
+    padding: 1%;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.profile-header-img {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    margin: 0 30px 0 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.mat-accent {
+    //background-color: $accent-color;
+    //color: $background-pale;
+}
+
+
+.active {
+    //background: $background-light;
+ }
+
+ .small-box, .large-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    background-size: cover;
+}
+
+.small-box {
+    height: 100px;
+    width: 100px;
+}
+
+.large-box {
+    height: 300px;
+    width: 300px;
+}
+
+ #section-to-scroll {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  .block-card {
+    background-color: var(--light-bg);
+}

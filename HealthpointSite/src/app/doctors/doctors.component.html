@@ -1,0 +1,39 @@
+<div class="container"  fxFlex="100" fxLayout="column" fxLayoutGap="1%" fxLayoutAlign="center">
+  <mat-card class="block-card">
+    <mat-card-header style="justify-content: center; align-items: center;">
+      <mat-card-title>
+        <h2>Список специалистов</h2>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="container" fxLayout="column" fxLayoutGap="1%">
+        <mat-form-field>
+          <mat-label>Введите профиль специалиста</mat-label>
+          <input matInput [(ngModel)]="searchTerm">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+        <mat-grid-list [cols]="breakpoint" rowHeight="{{rh}}" (window:resize)="onResize($event)">
+          <mat-grid-tile dense *ngFor="let doctor of doctors">
+            <mat-card fxLayout="column" style="margin-left: 2%; margin-right: 2%; padding: 10%; max-height: 100%; width: 100%">
+              <div fxLayout="column" fxLayoutAlign="start center">
+                <img style="margin-left:5%" src="assets/images/doctor_avatar.png" class="profile-header-img">
+                <div fxLayout="column" fxLayoutAlign="center center">
+                  <mat-card-title>{{doctor.FIO}}</mat-card-title>
+                  <app-star-rating style="color: rgba(0, 0, 0, 0.5); "></app-star-rating>
+                </div>
+                <div fxLayout.gt-sm="row" fxLayout.lt-md="column" fxLayoutAlign="start center" style="margin-left: 5%">
+                  <p>Специализация: {{doctor.Specialization}}</p>
+                  <a mat-icon-button #tooltip="matTooltip" matTooltip="{{doctor.SpecializationDesc}}">
+                    <mat-icon>info</mat-icon>
+                  </a>
+                </div>
+                <button mat-raised-button color="accent" [routerLink]="['/doctors/', doctor.id]" routerLink="active-link">Перейти в профиль</button>
+              </div>
+            </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

@@ -1,0 +1,29 @@
+<div class="container"
+  fxLayout="column"
+  fxLayoutGap="1%">
+  <div fxFlex>
+    <div fxLayout="column">
+      <div fxFlex="100" fxLayout="column" fxLayoutGap="1%">
+        <mat-card class="block-card">
+          <mat-card-header style="justify-content: center; align-items: center;">
+            <mat-card-title>
+              <h2>Статьи о здоровье</h2>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-grid-list [cols]="breakpoint" rowHeight="{{rh}}" (window:resize)="onResize($event)" [gutterSize]="'1%'">
+              <mat-grid-tile dense *ngFor="let article of articles">
+                <mat-card fxLayout="column" style="margin: 1%; padding: 5%; height: 90%; width: 100%">
+                  <h4 class="line-clamp" align="center">{{article.title}}</h4>
+                  <p fxHide.lt-md style="overflow: hidden; text-overflow: ellipsis;">{{article.annotation}}</p>
+                  <a style="position: absolute; bottom: 5%;" [routerLink]="['/article/' + article.id, article]" routerLinkActive="active-link">Подробнее...</a>
+                </mat-card>
+              </mat-grid-tile>
+            </mat-grid-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
+

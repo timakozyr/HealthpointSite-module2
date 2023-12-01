@@ -1,0 +1,26 @@
+@use '@angular/material' as mat;
+
+$my-palette: (
+ 50: #E5EAE3,
+ 100: #BECAB8,
+ 200: #93A789,
+ 300: #68835A,
+ 400: #476936,
+ 500: #274E13,
+ 600: #234711,
+ 700: #1D3D0E,
+ 800: #17350B,
+ 900: #0E2506,
+ A100: #7DFF61,
+ A200: #53FF2E,
+ A400: #2CFA00,
+ A700: #27E100,
+ // ... continues to 900
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+   // ... continues to 900
+ )
+);

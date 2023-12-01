@@ -1,0 +1,36 @@
+/*$lt-gray: #ddd;
+$background-dark: #004d40;
+$background-light: #009688;
+$background-pale: #e0f2f1;
+$background-moredark: #d3d1d1;
+$accent-color:        #004d40;*/
+
+
+.mat-accent {
+    //background-color: $accent-color;
+    //color: $background-pale;
+}
+
+
+.profile-header {
+    //background-color: $background-dark;
+    //color: $background-pale;
+    margin: 1%;
+    padding: 1%;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.profile-header-img {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    margin: 0 30px 0 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.block-card {
+    background-color: var(--light-bg);
+}

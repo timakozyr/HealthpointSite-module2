@@ -1,0 +1,40 @@
+<mat-toolbar>
+  <button mat-button style="font-size: 1em; padding: 1%;   display: flex; align-items: center; justify-content: center;" *ngIf="this.router.url === '/home'" [matMenuTriggerFor]="headers">
+    <img src="assets/images/logo2.png" style="height: 2em">
+    <span style="position: relative;top: -5px;">HealthPoint</span>
+  </button>
+  <button mat-button style="font-size: 1em; padding: 1%;   display: flex; align-items: center; justify-content: center;" *ngIf="this.router.url != '/home'" routerLink="/home">
+    <img src="assets/images/logo2.png" style="height: 2em">
+    <span style="position: relative;top: -5px;">HealthPoint</span>
+  </button>
+  <span class="flex-spacer"></span>
+  <button fxHide.lt-md mat-button routerLink="/doctors" routerLinkActive="active">Врачи</button>
+  <span class="flex-spacer"></span>
+  <button fxHide.lt-md mat-button routerLink="/services" routerLinkActive="active">Услуги</button>
+  <span class="flex-spacer"></span>
+  <button fxHide.lt-md mat-button routerLink="/articles" routerLinkActive="active">Статьи</button>
+  <span class="flex-spacer"></span>
+  <button fxHide.lt-md mat-button routerLink="/contact" routerLinkActive="active">Контакты</button>
+  <span class="flex-spacer"></span>
+  <button fxHide.lt-md mat-raised-button on-click="openAppointmentForm()">Записаться на прием</button>
+  <button fxHide.gt-sm mat-icon-button style="font-size: 1em" [matMenuTriggerFor]="sections"><i class="fa-solid fa-bars"></i></button>
+</mat-toolbar>
+
+<mat-menu #headers="matMenu" appearance="fill">
+  <button [ngxScrollTo]="'#card-hello'" mat-menu-item>О проекте</button>
+  <button [ngxScrollTo]="'#card-slider'" mat-menu-item>Популярные услуги</button>
+  <button [ngxScrollTo]="'#card-doctors'" mat-menu-item>Популярные врачи</button>
+  <button [ngxScrollTo]="'#card-contact'" mat-menu-item>Контакты</button>
+</mat-menu>
+
+<mat-menu #sections="matMenu" appearance="fill">
+  <button mat-menu-item routerLink="/home" routerLinkActive="active" *ngIf="this.router.url != '/home'">Главная</button>
+  <button mat-menu-item routerLink="/doctors" routerLinkActive="active">Врачи</button>
+  <span class="flex-spacer"></span>
+  <button mat-menu-item routerLink="/services" routerLinkActive="active">Услуги</button>
+  <span class="flex-spacer"></span>
+  <button mat-menu-item routerLink="/articles" routerLinkActive="active">Статьи</button>
+  <span class="flex-spacer"></span>
+  <button mat-menu-item routerLink="/contact" routerLinkActive="active">Контакты</button>
+  <button fxHide.gt-sm mat-menu-item on-click="openAppointmentForm()">Записаться на прием</button>
+</mat-menu>
