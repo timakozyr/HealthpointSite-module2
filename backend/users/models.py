@@ -18,6 +18,7 @@ class UserManager(BaseUserManager):
             first_name,
             last_name,
             patronymic_name,
+            city,
             profile_pic,
             password=None,
             **extra_fields
@@ -31,12 +32,15 @@ class UserManager(BaseUserManager):
             raise ValueError("Last name must be specified.")
         if not patronymic_name:
             raise ValueError("Patronymic name must be specified.")
+        if not city:
+            raise ValueError("City must be specified.")
 
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
             profile_pic=profile_pic,
+            city=city,
             patronymic_name=patronymic_name,
             **extra_fields
         )
@@ -53,6 +57,7 @@ class UserManager(BaseUserManager):
             last_name,
             patronymic_name,
             profile_pic,
+            city,
             password=None,
             **extra_fields
     ):
@@ -66,6 +71,8 @@ class UserManager(BaseUserManager):
             raise ValueError("Last name must be specified.")
         if not patronymic_name:
             raise ValueError("Patronymic name must be specified.")
+        if not city:
+            raise ValueError("City must be specified.")
 
         user = self.create_user(
             email=self.normalize_email(email),
@@ -73,6 +80,7 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             profile_pic=profile_pic,
+            city=city,
             patronymic_name=patronymic_name,
             **extra_fields
         )
@@ -93,6 +101,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     patronymic_name = models.CharField(max_length=30)
+    city = models.CharField(max_length=50)
     profile_pic = models.ImageField(
         blank=True, upload_to='profile_pic', default='default-pfp.jpg')
     date_joined = models.DateField(
@@ -108,7 +117,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "patronymic_name",
-                       "profile_pic"]
+                       "profile_pic", "city"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic_name}"

@@ -12,11 +12,12 @@ class UserAdmin(BaseUserAdmin):
         "date_joined",
         "last_login",
         "profile_pic",
+        "city",
         "is_admin",
         "is_staff",
     )
     search_fields = ["email"]
-    readonly_fields = ("id", "date_joined", "last_login", "profile_pic")
+    readonly_fields = ("id", "date_joined", "last_login", "profile_pic", "city")
 
     filter_horizontal = ()
     list_filter = ()
