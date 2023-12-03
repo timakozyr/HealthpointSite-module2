@@ -1,16 +1,16 @@
 from django.conf.urls.static import static
-from django.urls import path, include, re_path
 from django.contrib import admin
+from django.urls import include, path, re_path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from backend import settings
 from users import views
 
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
-                  path('admin/', admin.site.urls),
-                  path('users/', include('users.urls')),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("admin/", admin.site.urls),
+    path("users/", include("users.urls")),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 swagger = [
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),

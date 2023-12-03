@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, Doctor
+from .models import Doctor, User
 
 
 class UserAdmin(BaseUserAdmin):
@@ -17,7 +17,13 @@ class UserAdmin(BaseUserAdmin):
         "is_staff",
     )
     search_fields = ["email"]
-    readonly_fields = ("id", "date_joined", "last_login", "profile_pic", "city")
+    readonly_fields = (
+        "id",
+        "date_joined",
+        "last_login",
+        "profile_pic",
+        "city",
+    )
 
     filter_horizontal = ()
     list_filter = ()

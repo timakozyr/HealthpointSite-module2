@@ -1,12 +1,9 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-
 from rest_framework.authtoken.models import Token
 
 from specializations.models import Specialization
+from roles.models import Role
 
 
 class UserManager(BaseUserManager):
@@ -21,7 +18,7 @@ class UserManager(BaseUserManager):
             city,
             profile_pic,
             password=None,
-            **extra_fields
+            **extra_fields,
     ):
         """Creates and saves a User with the given email and password."""
         if not email:
@@ -42,7 +39,7 @@ class UserManager(BaseUserManager):
             profile_pic=profile_pic,
             city=city,
             patronymic_name=patronymic_name,
-            **extra_fields
+            **extra_fields,
         )
 
         user.set_password(password)
@@ -59,7 +56,7 @@ class UserManager(BaseUserManager):
             profile_pic,
             city,
             password=None,
-            **extra_fields
+            **extra_fields,
     ):
         """Creates and saves a superuser with the given email and password."""
 
@@ -82,7 +79,7 @@ class UserManager(BaseUserManager):
             profile_pic=profile_pic,
             city=city,
             patronymic_name=patronymic_name,
-            **extra_fields
+            **extra_fields,
         )
 
         user.is_admin = True
@@ -102,8 +99,11 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=30)
     patronymic_name = models.CharField(max_length=30)
     city = models.CharField(max_length=50)
+    role = models.OneToOneField(Role, on_delete=models.CASCADE)
+
     profile_pic = models.ImageField(
-        blank=True, upload_to='profile_pic', default='default-pfp.jpg')
+        blank=True, upload_to="profile_pic", default="default-pfp.jpg"
+    )
     date_joined = models.DateField(
         verbose_name="date joined", auto_now_add=True
     )
@@ -116,8 +116,13 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "patronymic_name",
-                       "profile_pic", "city"]
+    REQUIRED_FIELDS = [
+        "first_name",
+        "last_name",
+        "patronymic_name",
+        "profile_pic",
+        "city",
+    ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic_name}"
@@ -132,16 +137,15 @@ class User(AbstractBaseUser):
 class Doctor(User):
     """Doctor in the system."""
 
-    specialization = models.OneToOneField(Specialization,
-                                          on_delete=models.CASCADE)
-
-    is_staff = True
+    specialization = models.OneToOneField(
+        Specialization, on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic_name} - {self.specialization}"
 
     def has_perm(self, perm, obj=None):
-        return self.is_admin or perm == 'doctor_perm'
+        return self.is_admin or perm == "doctor_perm"
 
     def has_module_perms(self, app_label):
         return True
