@@ -99,7 +99,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=30)
     patronymic_name = models.CharField(max_length=30)
     city = models.CharField(max_length=50)
-    role = models.OneToOneField(Role, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     profile_pic = models.ImageField(
         blank=True, upload_to="profile_pic", default="default-pfp.jpg"

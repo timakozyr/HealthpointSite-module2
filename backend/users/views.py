@@ -27,7 +27,8 @@ class LoginAPIView(APIView):
                 "last_name": user.last_name,
                 "patronymic_name": user.patronymic_name,
                 "city": user.city,
-                "role": user.role.name
+                "role": user.role.name,
+                "profile_pic": user.profile_pic
             },
              },
             status=status.HTTP_200_OK
