@@ -1,3 +1,68 @@
-from django.shortcuts import render
+from rest_framework import viewsets, status, permissions
+from rest_framework.response import Response
+from .models import Appointment
+from .serializers import AppointmentSerializer
 
-# Create your views here.
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_admin
+
+
+class IsOwnerOrAdmin(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user or request.user.is_admin
+
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AppointmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_admin:
+            return Appointment.objects.all()
+        return Appointment.objects.filter(patient=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            appointment_patient = serializer.validated_data.get('patient').id
+
+            if not request.user.is_admin and appointment_patient != request.user.id:
+                return Response(
+                    {
+                        "detail": "You can only create appointments for yourself."
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None, *args, **kwargs):
+        appointment = self.get_object()
+        if not request.user.is_admin and appointment.user != request.user:
+            return Response(
+                {"detail": "You can only edit your own appointments."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        serializer = self.serializer_class(appointment, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None, *args, **kwargs):
+        appointment = self.get_object()
+        if not request.user.is_admin and appointment.user != request.user:
+            return Response(
+                {"detail": "You can only delete your own appointments."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        appointment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
