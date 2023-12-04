@@ -16,7 +16,6 @@ class UserManager(BaseUserManager):
             last_name,
             patronymic_name,
             city,
-            profile_pic,
             password=None,
             **extra_fields,
     ):
@@ -36,7 +35,6 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
-            profile_pic=profile_pic,
             city=city,
             patronymic_name=patronymic_name,
             **extra_fields,
@@ -53,7 +51,6 @@ class UserManager(BaseUserManager):
             first_name,
             last_name,
             patronymic_name,
-            profile_pic,
             city,
             password=None,
             **extra_fields,
@@ -76,7 +73,6 @@ class UserManager(BaseUserManager):
             password=password,
             first_name=first_name,
             last_name=last_name,
-            profile_pic=profile_pic,
             city=city,
             patronymic_name=patronymic_name,
             **extra_fields,
@@ -99,7 +95,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=30)
     patronymic_name = models.CharField(max_length=30)
     city = models.CharField(max_length=50)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, default=2)
 
     profile_pic = models.ImageField(
         blank=True, upload_to="profile_pic", default="default-pfp.jpg"
@@ -120,7 +116,6 @@ class User(AbstractBaseUser):
         "first_name",
         "last_name",
         "patronymic_name",
-        "profile_pic",
         "city",
     ]
 
@@ -137,7 +132,7 @@ class User(AbstractBaseUser):
 class Doctor(User):
     """Doctor in the system."""
 
-    specialization = models.OneToOneField(
+    specialization = models.ForeignKey(
         Specialization, on_delete=models.CASCADE
     )
 

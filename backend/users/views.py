@@ -20,17 +20,18 @@ class LoginAPIView(APIView):
             )
         token, created = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(instance=user)
+        user_data = {
+            "email": user.email.encode('utf-8'),
+            "first_name": user.first_name.encode('utf-8'),
+            "last_name": user.last_name.encode('utf-8'),
+            "patronymic_name": user.patronymic_name.encode('utf-8'),
+            "city": user.city.encode('utf-8'),
+            "role": user.role.name.encode('utf-8'),
+            # "profile_pic": user.profile_pic
+        }
+
         return Response(
-            {"token": token.key, "user": {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "patronymic_name": user.patronymic_name,
-                "city": user.city,
-                "role": user.role.name,
-                "profile_pic": user.profile_pic
-            },
-             },
+            {"token": token.key, "user": user_data},
             status=status.HTTP_200_OK
         )
 

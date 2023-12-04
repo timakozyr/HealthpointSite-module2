@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "users",
     "specializations",
     "roles",
+    "services",
     # Third-party apps
     "rest_framework",
     "rest_framework.authtoken",
