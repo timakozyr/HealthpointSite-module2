@@ -4,7 +4,7 @@ from specializations.models import Specialization
 
 
 class Service(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     specialization = models.ForeignKey(Specialization, on_delete=models.CASCADE)
     bio = models.TextField(null=True, blank=True)
     logo = models.ImageField(

@@ -45,7 +45,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if not request.user.is_admin and appointment.user != request.user:
+        if not request.user.is_admin and appointment.patient.id != request.user.id:
             return Response(
                 {"detail": "You can only edit your own appointments."},
                 status=status.HTTP_403_FORBIDDEN
@@ -59,7 +59,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if not request.user.is_admin and appointment.user != request.user:
+        if not request.user.is_admin and appointment.patient.id != request.user.id:
             return Response(
                 {"detail": "You can only delete your own appointments."},
                 status=status.HTTP_403_FORBIDDEN
