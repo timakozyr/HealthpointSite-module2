@@ -22,9 +22,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         service = self.get_object()
-        serializer = self.serializer_class(
-            service, data=request.data, partial=True
-        )
+        serializer = self.serializer_class(service, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

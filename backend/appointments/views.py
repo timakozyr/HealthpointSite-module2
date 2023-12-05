@@ -31,14 +31,9 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             appointment_patient = serializer.validated_data.get("patient").id
 
-            if (
-                not request.user.is_admin
-                and appointment_patient != request.user.id
-            ):
+            if not request.user.is_admin and appointment_patient != request.user.id:
                 return Response(
-                    {
-                        "detail": "You can only create appointments for yourself."
-                    },
+                    {"detail": "You can only create appointments for yourself."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
@@ -49,17 +44,12 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if (
-            not request.user.is_admin
-            and appointment.patient.id != request.user.id
-        ):
+        if not request.user.is_admin and appointment.patient.id != request.user.id:
             return Response(
                 {"detail": "You can only edit your own appointments."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        serializer = self.serializer_class(
-            appointment, data=request.data, partial=True
-        )
+        serializer = self.serializer_class(appointment, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -67,10 +57,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if (
-            not request.user.is_admin
-            and appointment.patient.id != request.user.id
-        ):
+        if not request.user.is_admin and appointment.patient.id != request.user.id:
             return Response(
                 {"detail": "You can only delete your own appointments."},
                 status=status.HTTP_403_FORBIDDEN,

@@ -38,9 +38,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email",
-                    models.EmailField(
-                        max_length=60, unique=True, verbose_name="email"
-                    ),
+                    models.EmailField(max_length=60, unique=True, verbose_name="email"),
                 ),
                 ("first_name", models.CharField(max_length=30)),
                 ("last_name", models.CharField(max_length=30)),
@@ -56,9 +54,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "date_joined",
-                    models.DateField(
-                        auto_now_add=True, verbose_name="date joined"
-                    ),
+                    models.DateField(auto_now_add=True, verbose_name="date joined"),
                 ),
                 ("is_admin", models.BooleanField(default=False)),
                 ("is_active", models.BooleanField(default=True)),
