@@ -2,8 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from rest_framework.authtoken.models import Token
 
-from specializations.models import Specialization
 from roles.models import Role
+from specializations.models import Specialization
 
 
 class UserManager(BaseUserManager):

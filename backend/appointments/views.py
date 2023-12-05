@@ -1,5 +1,6 @@
-from rest_framework import viewsets, status, permissions
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
+
 from .models import Appointment
 from .serializers import AppointmentSerializer
 
@@ -28,14 +29,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            appointment_patient = serializer.validated_data.get('patient').id
+            appointment_patient = serializer.validated_data.get("patient").id
 
-            if not request.user.is_admin and appointment_patient != request.user.id:
+            if (
+                not request.user.is_admin
+                and appointment_patient != request.user.id
+            ):
                 return Response(
                     {
                         "detail": "You can only create appointments for yourself."
                     },
-                    status=status.HTTP_403_FORBIDDEN
+                    status=status.HTTP_403_FORBIDDEN,
                 )
 
             serializer.save()
@@ -45,13 +49,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if not request.user.is_admin and appointment.patient.id != request.user.id:
+        if (
+            not request.user.is_admin
+            and appointment.patient.id != request.user.id
+        ):
             return Response(
                 {"detail": "You can only edit your own appointments."},
-                status=status.HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN,
             )
-        serializer = self.serializer_class(appointment, data=request.data,
-                                           partial=True)
+        serializer = self.serializer_class(
+            appointment, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -59,10 +67,13 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if not request.user.is_admin and appointment.patient.id != request.user.id:
+        if (
+            not request.user.is_admin
+            and appointment.patient.id != request.user.id
+        ):
             return Response(
                 {"detail": "You can only delete your own appointments."},
-                status=status.HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN,
             )
         appointment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
+
 User = get_user_model()
 
 
@@ -14,8 +15,9 @@ class Command(BaseCommand):
             last_name="Admin",
             patronymic_name="Admin",
             city="FakeCity",
-            password='admin'
+            password="admin",
         )
 
         self.stdout.write(
-            self.style.SUCCESS(f"Superuser created: {user.email}"))
+            self.style.SUCCESS(f"Superuser created: {user.email}")
+        )

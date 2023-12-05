@@ -6,12 +6,13 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from backend import settings
 from users import views
 
+
 urlpatterns = [
-                  path("admin/", admin.site.urls),
-                  path("users/", include("users.urls")),
-                  path("services/", include("services.urls")),
-                  path("appointments/", include("appointments.urls")),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("admin/", admin.site.urls),
+    path("users/", include("users.urls")),
+    path("services/", include("services.urls")),
+    path("appointments/", include("appointments.urls")),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 swagger = [
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
