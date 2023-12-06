@@ -16,10 +16,12 @@ class LoginAPIView(APIView):
     def post(self, request):
         user = get_object_or_404(User, email=request.data["email"])
         if not user.check_password(request.data["password"]):
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not found."},
+                            status=status.HTTP_404_NOT_FOUND)
         token, created = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(instance=user)
         user_data = {
+            "id": user.id,
             "email": user.email.encode("utf-8"),
             "first_name": user.first_name.encode("utf-8"),
             "last_name": user.last_name.encode("utf-8"),
@@ -54,6 +56,7 @@ class SignupAPIView(APIView):
                     {
                         "token": token.key,
                         "user": {
+                            "id": user.id,
                             "email": user.email,
                             "first_name": user.first_name,
                             "last_name": user.last_name,
