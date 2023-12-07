@@ -22,12 +22,12 @@ class LoginAPIView(APIView):
         serializer = UserSerializer(instance=user)
         user_data = {
             "id": user.id,
-            "email": user.email.encode("utf-8"),
-            "first_name": user.first_name.encode("utf-8"),
-            "last_name": user.last_name.encode("utf-8"),
-            "patronymic_name": user.patronymic_name.encode("utf-8"),
-            "city": user.city.encode("utf-8"),
-            "role": user.role.name.encode("utf-8"),
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "patronymic_name": user.patronymic_name,
+            "city": user.city,
+            "role": user.role.name,
             # "profile_pic": user.profile_pic
         }
 

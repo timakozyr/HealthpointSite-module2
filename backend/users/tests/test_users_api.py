@@ -25,6 +25,11 @@ class LoginSignupAPITestCase(APITestCase):
         response = self.client.post(self.signup_url, data=self.user_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertIn('user', response.data)
+        self.assertIn('email', response.data['user'])
+        self.assertEqual(response.data['user']['email'],
+                         self.user_data['email'])
+
     def test_login_api(self):
         response = self.client.post(self.signup_url, data=self.user_data)
         user_data = {
@@ -33,6 +38,10 @@ class LoginSignupAPITestCase(APITestCase):
         }
         response = self.client.post(self.login_url, user_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertIn('user', response.data)
+        self.assertIn('email', response.data['user'])
+        self.assertEqual(response.data['user']['email'], user_data['email'])
 
     def test_invalid_signup(self):
         response = self.client.post(self.signup_url, data=self.user_data)
@@ -43,3 +52,5 @@ class LoginSignupAPITestCase(APITestCase):
         }
         response = self.client.post(self.login_url, data=invalid_data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.assertNotIn('email', response.data)
