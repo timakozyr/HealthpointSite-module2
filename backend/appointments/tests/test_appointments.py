@@ -16,6 +16,7 @@ class AppointmentAPITest(APITestCase):
     def setUp(self):
         self.user_role = Role.objects.create(id=1, name="user")
         self.doctor_role = Role.objects.create(id=3, name="doctor")
+        self.admin_role = Role.objects.create(id=2, name="admin")
         self.specialization = Specialization.objects.create(
             name="Test Specialization")
 
@@ -137,3 +138,49 @@ class AppointmentAPITest(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_admin_appointments(self):
+        admin = User.objects.create_superuser(
+            email="admin@healthpoint.ru",
+            first_name="Admin",
+            last_name="Admin",
+            patronymic_name="Admin",
+            city="FakeCity",
+            password="admin",
+        )
+
+        self.assertTrue(admin.is_admin)
+        self.assertTrue(admin.is_staff)
+        self.assertTrue(admin.is_superuser)
+        self.assertTrue(admin.is_active)
+        self.assertIsNotNone(admin.date_joined)
+        self.assertEqual(admin.email, 'admin@healthpoint.ru')
+
+        url = reverse("appointments-list")
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+
+        data = {
+            "patient": self.user.id,
+            "doctor": self.doctor.id,
+            "date": str(date.today()),
+            "time": str(time(hour=10, minute=30)),
+            "cabinet": 101,
+            "service": self.service.id,
+        }
+        self.client.force_login(self.user)
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.token_admin = Token.objects.create(user=admin)
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_admin.key)
+
+        url = reverse("appointments-detail",
+                      kwargs={"pk": response.data["id"]})
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for key, value in data.items():
+            self.assertEqual(response.data[key], value)
