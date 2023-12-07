@@ -30,14 +30,19 @@ class AppointmentAPITest(APITestCase):
             role=self.user_role,
         )
 
-        self.doctor = Doctor.objects.create(
-            email="doctor@example.com",
-            first_name="Doctor",
-            last_name="Strange",
+        self.user2 = User.objects.create_user(
+            email="user3@example.com",
+            first_name="John",
+            last_name="Doe",
             patronymic_name="Patron",
             city="CityName",
+            password="password123",
+            role=self.user_role,
+        )
+
+        self.doctor = Doctor.objects.create(
+            user=self.user2,
             specialization=self.specialization,
-            role=self.doctor_role,
         )
 
         self.service = Service.objects.create(
@@ -153,7 +158,6 @@ class AppointmentAPITest(APITestCase):
         self.assertTrue(admin.is_staff)
         self.assertTrue(admin.is_superuser)
         self.assertTrue(admin.is_active)
-        self.assertIsNotNone(admin.date_joined)
         self.assertEqual(admin.email, 'admin@healthpoint.ru')
 
         url = reverse("appointments-list")

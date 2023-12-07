@@ -9,7 +9,6 @@ class UserAdmin(BaseUserAdmin):
         "email",
         "first_name",
         "last_name",
-        "date_joined",
         "last_login",
         "profile_pic",
         "city",
@@ -19,7 +18,6 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ["email"]
     readonly_fields = (
         "id",
-        "date_joined",
         "last_login",
         "profile_pic",
         "city",
