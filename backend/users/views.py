@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,7 +16,8 @@ class LoginAPIView(APIView):
     def post(self, request):
         user = get_object_or_404(User, email=request.data["email"])
         if not user.check_password(request.data["password"]):
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not found."},
+                            status=status.HTTP_404_NOT_FOUND)
         token, created = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(instance=user)
         user_data = {
@@ -67,3 +68,51 @@ class SignupAPIView(APIView):
                     status=status.HTTP_200_OK,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_admin:
+            return User.objects.all()
+        return User.objects.filter(id=self.request.user.id)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            if not request.user.is_admin and request.user.id != serializer.validated_data.get(
+                    "id"):
+                return Response(
+                    {"detail": "You can only create users for yourself."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None, *args, **kwargs):
+        user = self.get_object()
+        if not request.user.is_admin and user.id != request.user.id:
+            return Response(
+                {"detail": "You can only edit your own user data."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        serializer = self.serializer_class(user, data=request.data,
+                                           partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None, *args, **kwargs):
+        user = self.get_object()
+        if not request.user.is_admin and user.id != request.user.id:
+            return Response(
+                {"detail": "You can only delete your own user."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

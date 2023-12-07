@@ -16,7 +16,8 @@ class AppointmentAPITest(APITestCase):
     def setUp(self):
         self.user_role = Role.objects.create(id=1, name="user")
         self.doctor_role = Role.objects.create(id=3, name="doctor")
-        self.specialization = Specialization.objects.create(name="Test Specialization")
+        self.specialization = Specialization.objects.create(
+            name="Test Specialization")
 
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -64,14 +65,50 @@ class AppointmentAPITest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Appointment.objects.count(), 1)
+        for key, value in data.items():
+            self.assertEqual(response.data[key], value)
 
-    def test_retrieve_service(self):
-        url = reverse("service-detail", kwargs={"pk": self.service.id})
+    def test_retrieve_appointments(self):
+        url = reverse("appointments-list")
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+
+        data = {
+            "patient": self.user.id,
+            "doctor": self.doctor.id,
+            "date": str(date.today()),
+            "time": str(time(hour=10, minute=30)),
+            "cabinet": 101,
+            "service": self.service.id,
+        }
+        self.client.force_login(self.user)
+        response1 = self.client.post(url, data, format="json")
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_appointment(self):
+        url = reverse("appointments-list")
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+
+        data = {
+            "patient": self.user.id,
+            "doctor": self.doctor.id,
+            "date": str(date.today()),
+            "time": str(time(hour=10, minute=30)),
+            "cabinet": 101,
+            "service": self.service.id,
+        }
+        self.client.force_login(self.user)
+        response1 = self.client.post(url, data, format="json")
+
+        url = reverse("appointments-detail",
+                      kwargs={"pk": response1.data["id"]})
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["name"], self.service.name)
+        for key, value in data.items():
+            self.assertEqual(response.data[key], value)
 
     def test_retrieve_own_appointment(self):
         new_user = User.objects.create_user(
