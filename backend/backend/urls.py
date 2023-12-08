@@ -8,11 +8,11 @@ from users import views
 
 urlpatterns = [
                   path("admin/", admin.site.urls),
-                  path("users/", include("users.urls")),
-                  path("services/", include("services.urls")),
-                  path("appointments/", include("appointments.urls")),
-                  path("specializations/", include("specializations.urls")),
-                  path("doctors/", include("doctors.urls")),
+                  path("api/users/", include("users.urls")),
+                  path("api/services/", include("services.urls")),
+                  path("api/appointments/", include("appointments.urls")),
+                  path("api/specializations/", include("specializations.urls")),
+                  path("api/doctors/", include("doctors.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 swagger = [
