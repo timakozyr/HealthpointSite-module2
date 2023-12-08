@@ -1,10 +1,8 @@
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render
-
-from rest_framework import permissions
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import permissions, status
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Specialization
 from .serializers import SpecializationSerializer
@@ -40,8 +38,7 @@ class SpecializationViewSet(ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data,
-                                         partial=True)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)

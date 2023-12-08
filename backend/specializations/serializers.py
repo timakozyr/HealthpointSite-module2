@@ -6,8 +6,4 @@ from .models import Specialization
 class SpecializationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialization
-        fields = [
-            "id",
-            "name",
-            "description"
-        ]
+        fields = ["id", "name", "description"]

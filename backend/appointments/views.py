@@ -1,11 +1,11 @@
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.response import Response
 
+from doctors.models import Doctor
+from users.models import User
+
 from .models import Appointment
 from .serializers import AppointmentSerializer
-
-from users.models import User
-from doctors.models import Doctor
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -36,16 +36,13 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
             if not request.user.is_admin and appointment_patient != request.user.id:
                 return Response(
-                    {
-                        "detail": "You can only create appointments for yourself."},
+                    {"detail": "You can only create appointments for yourself."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-            if appointment_patient == serializer.validated_data.get(
-                    "doctor").user.id:
+            if appointment_patient == serializer.validated_data.get("doctor").user.id:
                 return Response(
-                    {
-                        "detail": "You can not make appointment to yourself"},
+                    {"detail": "You can not make appointment to yourself"},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
@@ -61,8 +58,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                 {"detail": "You can only edit your own appointments."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        serializer = self.serializer_class(appointment, data=request.data,
-                                           partial=True)
+        serializer = self.serializer_class(appointment, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

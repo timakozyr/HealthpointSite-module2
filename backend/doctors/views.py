@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AnonymousUser
-
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
 
 from .models import Doctor
 from .serializers import DoctorSerializer

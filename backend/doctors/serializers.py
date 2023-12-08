@@ -1,7 +1,8 @@
-from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from rest_framework import serializers
 
 from users.serializers import UserSerializer
+
 from .models import Doctor
 
 
@@ -10,13 +11,10 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = [
-            'user',
-            'specialization'
-        ]
+        fields = ["user", "specialization"]
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
+        user_data = validated_data.pop("user")
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()

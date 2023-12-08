@@ -10,14 +10,14 @@ class UserManager(BaseUserManager):
     """User manager in the system for the User model."""
 
     def create_user(
-            self,
-            email,
-            first_name,
-            last_name,
-            patronymic_name,
-            city,
-            password=None,
-            **extra_fields,
+        self,
+        email,
+        first_name,
+        last_name,
+        patronymic_name,
+        city,
+        password=None,
+        **extra_fields,
     ):
         """Creates and saves a User with the given email and password."""
         if not email:
@@ -46,14 +46,14 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(
-            self,
-            email,
-            first_name,
-            last_name,
-            patronymic_name,
-            city,
-            password=None,
-            **extra_fields,
+        self,
+        email,
+        first_name,
+        last_name,
+        patronymic_name,
+        city,
+        password=None,
+        **extra_fields,
     ):
         """Creates and saves a superuser with the given email and password."""
 

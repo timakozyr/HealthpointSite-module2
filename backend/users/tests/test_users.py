@@ -1,17 +1,16 @@
 from django.test import TestCase
 
+from doctors.models import Doctor
 from roles.models import Role
 from specializations.models import Specialization
 from users.models import User
-from doctors.models import Doctor
 
 
 class UserModelTest(TestCase):
     def setUp(self):
         self.user_role = Role.objects.create(id=1, name="user")
         self.doctor_role = Role.objects.create(id=3, name="doctor")
-        self.specialization = Specialization.objects.create(
-            name="Test Specialization")
+        self.specialization = Specialization.objects.create(name="Test Specialization")
 
     def create_user(self):
         return User.objects.create_user(
@@ -40,5 +39,4 @@ class UserModelTest(TestCase):
         doctor = self.create_doctor(self.user)
         retrieved_doctor = Doctor.objects.get(user_id=self.user.id)
 
-        self.assertEqual(doctor.user.first_name,
-                         retrieved_doctor.user.first_name)
+        self.assertEqual(doctor.user.first_name, retrieved_doctor.user.first_name)

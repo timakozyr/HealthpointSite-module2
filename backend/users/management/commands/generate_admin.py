@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 
 from roles.models import Role
 
+
 User = get_user_model()
 
 
@@ -19,8 +20,7 @@ class Command(BaseCommand):
             patronymic_name="Admin",
             city="FakeCity",
             password="admin",
-            role=role
+            role=role,
         )
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Superuser created: {user.email}"))
+        self.stdout.write(self.style.SUCCESS(f"Superuser created: {user.email}"))

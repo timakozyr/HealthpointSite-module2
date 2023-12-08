@@ -1,12 +1,14 @@
-from django.core.management.base import BaseCommand
-from faker import Faker
 import random
 
-from specializations.models import Specialization
-from users.models import User
+from django.core.management.base import BaseCommand
+from faker import Faker
+
+from appointments.models import Appointment
 from doctors.models import Doctor
 from services.models import Service
-from appointments.models import Appointment
+from specializations.models import Specialization
+from users.models import User
+
 
 fake = Faker()
 
@@ -25,7 +27,7 @@ class Command(BaseCommand):
                     last_name=fake.last_name(),
                     patronymic_name=fake.first_name(),
                     city=fake.city(),
-                    password='password'
+                    password="password",
                 )
 
         if not Doctor.objects.exists():
@@ -40,10 +42,9 @@ class Command(BaseCommand):
         if not Service.objects.exists():
             specializations = Specialization.objects.all()
             for specialization in specializations:
-                services = ['Service A', 'Service B', 'Service C']
+                services = ["Service A", "Service B", "Service C"]
                 for service_name in services:
-                    existing_service = (Service.objects.filter(
-                        name=service_name))
+                    existing_service = Service.objects.filter(name=service_name)
                     if not existing_service:
                         Service.objects.create(
                             name=service_name,
@@ -59,9 +60,8 @@ class Command(BaseCommand):
             random_user = random.choice(users)
             random_doctor = random.choice(doctors)
             random_service = random.choice(services)
-            appointment_date = fake.date_between(start_date='+1d',
-                                                 end_date='+30d')
-            appointment_time = fake.time(pattern='%H:%M:%S', end_datetime=None)
+            appointment_date = fake.date_between(start_date="+1d", end_date="+30d")
+            appointment_time = fake.time(pattern="%H:%M:%S", end_datetime=None)
             cabinet_number = fake.random_int(min=1, max=10)
 
             Appointment.objects.create(
@@ -74,4 +74,5 @@ class Command(BaseCommand):
             )
 
         self.stdout.write(
-            self.style.SUCCESS("Dummy appointments generated successfully!"))
+            self.style.SUCCESS("Dummy appointments generated successfully!")
+        )
