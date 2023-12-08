@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from .models import Appointment
 from .serializers import AppointmentSerializer
 
-from users.models import User, Doctor
+from users.models import User
+from doctors.models import Doctor
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):

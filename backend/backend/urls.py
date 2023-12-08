@@ -12,6 +12,7 @@ urlpatterns = [
                   path("services/", include("services.urls")),
                   path("appointments/", include("appointments.urls")),
                   path("specializations/", include("specializations.urls")),
+                  path("doctors/", include("doctors.urls")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 swagger = [

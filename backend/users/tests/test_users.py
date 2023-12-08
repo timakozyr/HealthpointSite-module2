@@ -2,7 +2,8 @@ from django.test import TestCase
 
 from roles.models import Role
 from specializations.models import Specialization
-from users.models import Doctor, User
+from users.models import User
+from doctors.models import Doctor
 
 
 class UserModelTest(TestCase):

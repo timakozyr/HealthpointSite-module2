@@ -3,10 +3,10 @@ from faker import Faker
 import random
 
 from specializations.models import Specialization
-from users.models import User, Doctor
+from users.models import User
+from doctors.models import Doctor
 from services.models import Service
 from appointments.models import Appointment
-from django.utils import timezone
 
 fake = Faker()
 
@@ -17,7 +17,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Generating dummy appointments")
 
-        # Generate dummy users, doctors, and services if not already existing
         if not User.objects.exists():
             for _ in range(5):
                 User.objects.create_user(
@@ -26,7 +25,7 @@ class Command(BaseCommand):
                     last_name=fake.last_name(),
                     patronymic_name=fake.first_name(),
                     city=fake.city(),
-                    password='password',  # Set default password
+                    password='password'
                 )
 
         if not Doctor.objects.exists():
@@ -43,11 +42,14 @@ class Command(BaseCommand):
             for specialization in specializations:
                 services = ['Service A', 'Service B', 'Service C']
                 for service_name in services:
-                    Service.objects.create(
-                        name=service_name,
-                        specialization=specialization,
-                        bio=fake.text(),
-                    )
+                    existing_service = (Service.objects.filter(
+                        name=service_name))
+                    if not existing_service:
+                        Service.objects.create(
+                            name=service_name,
+                            specialization=specialization,
+                            bio=fake.text(),
+                        )
 
         users = User.objects.all()
         doctors = Doctor.objects.all()

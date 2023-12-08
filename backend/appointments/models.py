@@ -1,7 +1,8 @@
 from django.db import models
 
+from doctors.models import Doctor
 from services.models import Service
-from users.models import Doctor, User
+from users.models import User
 
 
 class Appointment(models.Model):

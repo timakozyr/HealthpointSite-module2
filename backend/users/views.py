@@ -8,8 +8,8 @@ from django.contrib.auth.models import AnonymousUser
 
 from roles.models import Role
 
-from .models import User, Doctor
-from .serializers import UserLoginSerializer, UserSerializer, DoctorSerializer
+from .models import User
+from .serializers import UserLoginSerializer, UserSerializer
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -128,18 +128,3 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class DoctorViewSet(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
-    permission_classes = [IsAdminOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save()
-
-    def perform_update(self, serializer):
-        serializer.save()
-
-    def perform_destroy(self, instance):
-        instance.delete()

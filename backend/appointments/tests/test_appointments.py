@@ -9,7 +9,8 @@ from appointments.models import Appointment
 from roles.models import Role
 from services.models import Service
 from specializations.models import Specialization
-from users.models import Doctor, User
+from users.models import User
+from doctors.models import Doctor
 
 
 class AppointmentAPITest(APITestCase):
