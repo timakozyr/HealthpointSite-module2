@@ -4,11 +4,22 @@ from rest_framework import status, permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.models import AnonymousUser
 
 from roles.models import Role
 
 from .models import User, Doctor
 from .serializers import UserLoginSerializer, UserSerializer, DoctorSerializer
+
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if not isinstance(request.user, AnonymousUser):
+            return request.user.is_admin
+        return False
 
 
 class LoginAPIView(APIView):
@@ -119,50 +130,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class DoctorViewSet(viewsets.ModelViewSet):
-#     queryset = Doctor.objects.all()
-#     serializer_class = DoctorSerializer
-#     permission_classes = [permissions.IsAdminUser]
-#
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         role = Role.objects.get(id=3)
-#
-#         user_data = serializer.validated_data.pop('user')
-#         specialization = serializer.validated_data.pop('specialization')
-#
-#         # Check if the user already exists
-#         user = User.objects.filter(email=user_data.get('email')).first()
-#
-#         if not user:
-#             user_serializer = UserSerializer(data=user_data)
-#             if user_serializer.is_valid():
-#                 user = user_serializer.save(role=role)
-#                 print("User created")
-#             else:
-#                 return Response(user_serializer.errors,
-#                                 status=status.HTTP_400_BAD_REQUEST)
-#
-#         user_instance = user if 'user_serializer' in locals() else user_serializer.instance
-#         print("User checked")
-#         # Create the Doctor associated with the existing or newly created user
-#         doctor = Doctor.objects.create(
-#             specialization=specialization,
-#             user_ptr=user_instance,
-#             **serializer.validated_data
-#         )
-#
-#         print("Doctor created")
-#
-#         return Response(self.get_serializer(doctor).data,
-#                         status=status.HTTP_201_CREATED)
-
-
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save()
