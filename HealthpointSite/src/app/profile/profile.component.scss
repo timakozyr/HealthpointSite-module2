@@ -1,0 +1,25 @@
+/*$lt-gray: #ddd;
+$background-dark: #004d40;
+$background-light: #009688;
+$background-pale: #e0f2f1;
+$background-moredark: #d3d1d1;
+$accent-color:        #004d40;*/
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+}
+
+.service-box-desc {
+  //background-color: $background-dark;
+  //color: $background-pale;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+}
+
+.block-card {
+  background-color: var(--light-bg);
+}

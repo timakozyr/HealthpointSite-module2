@@ -1,0 +1,64 @@
+<div fxLayoutGap="10px" style="width:100%; height:100%">
+    <div fxLayout="row" fxLayout.xs="row">
+        <p style="margin: 10px">Регистрация нового доктора</p>
+        <span class="flex-spacer"></span>
+        <button mat-flat-button color="warn" mat-dialog-close style="margin: 10px">&times;</button>
+    </div>
+    <div>
+        <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+            <mat-dialog-content>
+                <div fxFlex style="overflow-y: hidden;" fxLayoutGap="10">
+                    <mat-form-field>
+                        <input matInput placeholder="Электронная почта" type="email"
+                            [(ngModel)]="user.email" name="email"
+                            #email="ngModel" required>
+                        <mat-error *ngIf="email.errors?.required">Введите email!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Пароль" type="password"
+                            [(ngModel)]="user.password" name="password"
+                            #password="ngModel" required>
+                        <mat-error *ngIf="password.errors?.required">Введите пароль!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Фамилия" type="text"
+                            [(ngModel)]="user.last_name" name="last_name"
+                            #last_name="ngModel" required>
+                        <mat-error *ngIf="last_name.errors?.required">Введите фамилию!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Имя" type="text"
+                            [(ngModel)]="user.first_name" name="first_name"
+                            #first_name="ngModel" required>
+                        <mat-error *ngIf="first_name.errors?.required">Введите имя!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Отчество" type="text"
+                            [(ngModel)]="user.patronymics" name="patronymics"
+                            #patronymics="ngModel">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Город"
+                        [(ngModel)]="user.city" name="city"
+                        #city="ngModel" required>
+                        <mat-error *ngIf="city.errors?.required">Введите город!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select [(ngModel)]="specializationId" name="specialization" placeholder="Специализация" #specialization="ngModel" required>
+                            <mat-option *ngFor="let specializationName of specs" [value]="specializationName.id">
+                                {{specializationName.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="specialization.errors?.required">Выберите специализацию врача!</mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-dialog-content>
+            <mat-dialog-actions>
+                <span class="flex-spacer"></span>
+                <button mat-button mat-dialog-close>Отмена</button>
+                <button mat-button type="submit" class="background-primary text-floral-white"
+                [disabled]="registerForm.form.invalid">Подтвердить</button>
+            </mat-dialog-actions>
+        </form>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 <div fxLayoutGap="10px">
     <div fxLayout="row" fxLayout.xs="row">
-        <p style="margin: 10px">Новая заявка</p>
+        <p style="margin: 10px">Новая запись на прием</p>
         <span class="flex-spacer"></span>
         <button mat-raised-button color="warn" mat-dialog-close style="margin: 10px">&times;</button>
     </div>
@@ -8,42 +8,42 @@
         <form #feedbackForm="ngForm" (ngSubmit)="onSubmit()">
             <mat-dialog-content>
                 <div fxFlex fxLayout="column" fxLayoutGap="10">
-                    <mat-form-field>
-                        <input matInput placeholder="Ваше ФИО" type="text"
-                            [(ngModel)]="appointment.username" name="username"
+                    <mat-form-field *ngIf="user.profile == UserProfileType.admin">
+                        <mat-label>ФИО пациента</mat-label>
+                        <mat-select [(ngModel)]="appointment.patientId" name="userFIO" #userFIO="ngModel" required>
+                            <mat-option *ngFor="let patient of getPatients()" [value]="patient.id">
+                                {{patient.FIO()}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="userFIO.errors?.required">Выберите пациента</mat-error>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="user.profile != UserProfileType.admin">
+                        <input matInput placeholder="ФИО" type="text"
+                            [(ngModel)]="appointment.patientFIO" name="username"
                             #username="ngModel" required>
                         <mat-error *ngIf="username.errors?.required">ФИО должно быть указано</mat-error>
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Специализация врача</mat-label>
-                        <mat-select [(ngModel)]="appointment.doctorType" name="doctorType" #doctorType="ngModel" required>
-                            <mat-option *ngFor="let doctorType of doctorTypes" [value]="doctorType">
-                                {{doctorType}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="doctorType.errors?.required">Выберите врача</mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>ФИО врача</mat-label>
-                        <mat-select [(ngModel)]="appointment.doctorFIO" name="doctorFIO" #doctorFIO="ngModel" required>
-                            <mat-option *ngFor="let doctorFIO of doctorsService.getDoctorNamesBySpec(appointment.doctorType)" [value]="doctorFIO">
-                                {{doctorFIO}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="doctorFIO.errors?.required">Выберите врача</mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
                         <mat-label>Тип услуги</mat-label>
-                        <mat-select [(ngModel)]="appointment.medService" name="selectedService" #selectedService="ngModel" required>
-                            <mat-option *ngFor="let service of medService.getAllServicesNames()" [value]="selectedService">
-                                {{service}}
+                        <mat-select [(ngModel)]="appointment.medServiceId" name="selectedService" #selectedService="ngModel" required>
+                            <mat-option *ngFor="let service of serviceTypes" [value]="service.id">
+                                {{service.name}}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="selectedService.errors?.required">Выберите врача</mat-error>
                     </mat-form-field>
                     <mat-form-field>
+                        <mat-label>ФИО врача</mat-label>
+                        <mat-select [(ngModel)]="appointment.doctorId" name="doctorFIO" #doctorFIO="ngModel" required>
+                            <mat-option *ngFor="let doctor of getDoctorsBySpec(appointment.medServiceId)" [value]="doctor.id">
+                                {{doctor.FIO}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="doctorFIO.errors?.required">Выберите врача</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
                         <mat-label>Дата</mat-label>
-                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date">
+                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date" name="selectedDate">
                         <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
                         <mat-datepicker #dp3 disabled="false"></mat-datepicker>
                     </mat-form-field>

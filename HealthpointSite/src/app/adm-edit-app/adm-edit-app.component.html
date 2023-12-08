@@ -1,0 +1,15 @@
+<div fxLayoutGap="10px">
+    <div fxLayout="row" fxLayout.xs="row">
+        <p style="margin: 10px">Редактировать заявку</p>
+        <span class="flex-spacer"></span>
+        <button mat-raised-button color="warn" mat-dialog-close style="margin: 10px">&times;</button>
+    </div>
+    <div>
+        <mat-form-field>
+            <input matInput placeholder="Номер заявки" type="number"
+                [(ngModel)]="appointmentId" name="appointment"
+                #appointment="ngModel" required>
+            <mat-error *ngIf="appointment.errors?.required">Номер заявки должен быть указан</mat-error>
+        </mat-form-field>
+    </div>
+</div>

@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Doctor } from '../models/doctor';
 import { DoctorsService } from '../services/doctors.service';
@@ -43,6 +42,6 @@ export class DoctorsComponent {
   
 
   constructor(service: DoctorsService) {
-    this.doctors = service.getDoctors();
+    service.getDoctors().subscribe(res => this.doctors = res);
   }
 }

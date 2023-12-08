@@ -1,0 +1,51 @@
+<div class="container"
+  fxLayout="column"
+  fxLayoutGap="10px">
+  <!-- FOR BIG/MEDIUM SCREENS SHOW TABLE -->
+  <table fxHide.lt-sm mat-table matSort matTableResponsive [dataSource]="appointments" >
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Дата</th>
+      <td mat-cell *matCellDef="let appointment">{{appointment.date}}</td>
+    </ng-container>
+    <ng-container matColumnDef="medService">
+      <th mat-header-cell *matHeaderCellDef>Процедура</th>
+      <td mat-cell *matCellDef="let appointment">{{getServiceById(appointment.medServiceId)?.name}}</td>
+    </ng-container>
+    
+    <ng-container matColumnDef="visiting">
+      <th mat-header-cell *matHeaderCellDef>{{user.profile == UserProfileType.doctor ? "Пациент" : "Доктор"}}</th>
+      <td mat-cell *matCellDef="let appointment">{{user.profile == UserProfileType.doctor ? getUserById(appointment.patientId).FIO() : getDoctorById(appointment.doctorId)?.FIO}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef>
+        <button mat-flat-button>
+          <mat-icon>delete</mat-icon>
+           Отменить
+        </button>
+        <button mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  </table>
+
+  <!-- FOR SMALL SCREENS SHOW GRID LIST -->
+  <mat-grid-list fxHide.gt-xs [cols]="breakpoint" rowHeight="{{rh}}" (window:resize)="onResize($event)" [gutterSize]="'0px'">
+    <mat-grid-tile dense *ngFor="let appointment of appointments">
+      <mat-card fxLayout="column" style="margin: 1%; padding: 5%; min-height: 50%; max-height: 100%; width: 100%;">
+        <div fxLayout="column" fxLayoutAlign="center">
+          <h4 align="center">{{appointment['date']}}</h4>
+          <h4 align="center">{{appointment['medService']}}</h4>
+          <p align="center">{{user.profile == UserProfileType.doctor ? "Пациент" : "Доктор"}}: {{user.profile == UserProfileType.doctor ? appointment['doctorFIO'] : appointment['username']}}</p>
+          <button align="center" mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
+          <button align="center" mat-flat-button><mat-icon>delete</mat-icon> Отменить</button>
+        </div>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+

@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Doctor } from '../models/doctor';
+import { Observable, map } from 'rxjs';
+import { ApiService } from './api.service';
+import { User } from '../models/user';
+import { SpecializationService } from './specialization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +12,7 @@ export class DoctorsService {
 
   public doctors: Doctor[];
 
-  constructor() {
+  constructor(private _api: ApiService, private specService: SpecializationService) {
     this.doctors = [];
     this.createDoctor("Иванов Иван Иванович", "Терапевт", 1, TEXT_TERAPEVT);
     this.createDoctor("Николаев Николай Николаевич", "Хирург", 2, TEXT_SURGEON);
@@ -30,21 +34,53 @@ export class DoctorsService {
   createDoctor(fio: string, spec: string, id: number, descr: string) {
     let doctor = new Doctor();
     doctor.FIO = fio;
-    doctor.Specialization = spec;
+    doctor.specialization = spec;
     doctor.id = id;
-    doctor.SpecializationDesc = descr;
+    doctor.specializationDesc = descr;
     this.doctors.push(doctor);
   }
 
-  getDoctors = () => this.doctors;
+  createNewDoctorJson(input: any) {
+    var doctor = new Doctor;
+    doctor.id = input.id;
+    doctor.FIO = input.user.last_name + " " + input.user.first_name + " " + input.user.patronymic_name;
+    doctor.specializationId = input.specialization;
+    this.specService.getSpecializationById(doctor.specializationId).subscribe(
+      res => {
+        let spec = this.specService.createNewSpecJson(res);
+        doctor.specialization = spec.name;
+        doctor.specializationDesc = spec.description;
+      }
+    );
 
-  getDoctorsSpecs = () => [...new Set(this.doctors.map(doc => doc.Specialization))];
+    return doctor;
+  }
 
-  getDoctorsBySpec = (spec) => this.doctors.filter(doc => doc.Specialization.toLowerCase() == spec.toLowerCase());
+  register(user: User, specialization: number) {
+    let b = {
+      "user" : {
+        "email" : user.email,
+        "first_name": user.first_name,
+        "patronymic_name": user.patronymics,
+        "last_name": user.last_name,
+        "city": user.city,
+        "password": user.password
+      },
+      "specialization": specialization
+    }
+    
+    return this._api.postTypeRequest('doctors', b);
+  }
 
-  getDoctorNamesBySpec = (spec) => this.doctors.filter(doc => doc.Specialization.toLowerCase() == spec.toLowerCase()).map(d => d.FIO);
+  getDoctors() : Observable<Doctor[]> {
+    return this._api.getTypeRequest('doctors').pipe(map((res: any) => res.map(r => this.createNewDoctorJson(r))));
+  }
 
   getDoctor = (id) => (id > 0 && id <= this.doctors.length) ? this.doctors[id - 1] : null;
+
+  deleteDoctor(id: number) {
+    return this._api.deleteTypeRequest(`doctors/${id}`);
+  }
 
 }
 

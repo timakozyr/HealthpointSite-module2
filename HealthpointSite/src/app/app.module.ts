@@ -53,6 +53,17 @@ import { StarRatingComponent } from './star-rating/star-rating.component';
 import { SearchFilterPipe } from './services/search-filter.pipe';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 import { PopularDoctorsComponent } from './popular-doctors/popular-doctors.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { ProfileComponent } from './profile/profile.component';
+import { AppointmentsListComponent } from './appointments-list/appointments-list.component';
+import { MatTableResponsiveModule } from './directives/table-directive/table-directive-module';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { AdmRegDoctorComponent } from './adm-reg-doctor/adm-reg-doctor.component';
+import { AdmRegUserComponent } from './adm-reg-user/adm-reg-user.component';
+import { AdmDelAppComponent } from './adm-del-app/adm-del-app.component';
+import { AdmEditAppComponent } from './adm-edit-app/adm-edit-app.component';
+import { AdmNewServiceComponent } from './adm-new-service/adm-new-service.component';
 
 
 @NgModule({
@@ -74,6 +85,16 @@ import { PopularDoctorsComponent } from './popular-doctors/popular-doctors.compo
     AppointmentFormComponent,
     SearchFilterPipe,
     PopularDoctorsComponent,
+    LoginComponent,
+    RegisterComponent,
+    ProfileComponent,
+    AppointmentsListComponent,
+    AdminPanelComponent,
+    AdmRegDoctorComponent,
+    AdmRegUserComponent,
+    AdmDelAppComponent,
+    AdmEditAppComponent,
+    AdmNewServiceComponent,
   ],
   imports: [
     BrowserModule,
@@ -105,16 +126,20 @@ import { PopularDoctorsComponent } from './popular-doctors/popular-doctors.compo
     MatTooltipModule,
     MatTabsModule,
     MatSliderModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    MatTableResponsiveModule
   ],
   providers: [
   { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
   { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true} }
   ],
   entryComponents: [
-    FeedbackFormComponent
+    FeedbackFormComponent,
+    AppointmentFormComponent,
+    RegisterComponent,
+    LoginComponent
   ],
   bootstrap: [AppComponent],
-  exports: [AppRoutingModule, StarRatingComponent]
+  exports: [AppRoutingModule, StarRatingComponent, MatTableResponsiveModule]
 })
 export class AppModule {}

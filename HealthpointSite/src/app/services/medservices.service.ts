@@ -1,42 +1,60 @@
 import { Injectable } from '@angular/core';
 import { MedService } from '../models/med-service';
+import { ApiService } from './api.service';
+import { Observable, map } from 'rxjs';
+import { DoctorsService } from './doctors.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedservicesService {
 
-  allServices: MedService[];
-  constructor() {
-    this.allServices = [];
-    this.createMedService("Общий осмотр у терапевта", "services", 1, terapevtDesc, "assets/images/terapevt.jpeg");
-    this.createMedService("Прохождение диспансеризации", "services", 2, dispanserDesc, "assets/images/dispanser.jpg");
-    this.createMedService("Общий анализ крови", "analyzes", 3, bloodAnalyzeDesc, "assets/images/laboratory.jpg");
-    this.createMedService("ЭКГ", "analyzes", 4, ekgDesc, "assets/images/ekg.jpg");
-    this.createMedService("Вакцинация от COVID-19", "services", 5, vacDesc, "");
-    this.createMedService("Флюорография", "analyzes", 6, fluroDesc, "");
-    this.createMedService("МРТ", "analyzes", 7, mrtDesc, "");
-    this.createMedService("КТ", "analyzes", 8, ktDesc, "");
-    
+  
+  constructor(private _api: ApiService, private doctorsService: DoctorsService) {
   }
 
-  createMedService(name: string, category: string, id: number, description: string, pic: string) {
+  createMedService(name: string, specialization: number, id: number, description: string, pic: string) {
     let medService = new MedService();
     medService.name = name;
-    medService.category = category;
+    medService.specialization = specialization;
     medService.id = id;
     medService.description = description;
     medService.pic = pic;
-    this.allServices.push(medService)
+    
+    return medService;
   }
 
-  filterByCategory(categoryName: string) {
-    return this.allServices.filter(el => el.category.trim().toLowerCase() == categoryName.trim().toLowerCase());
+  createNewMedServiceJson(input: any) {
+    var to_return = new MedService;
+    to_return.id = input.id;
+    to_return.name = input.name;
+    to_return.specialization = input.specialization;
+    to_return.description = input.bio;
+
+    return to_return;
   }
 
-  getAllServices = () => this.allServices;
+  getAllServices() : Observable<MedService[]> {
+    return this._api.getTypeRequest('services/').pipe(map((res: any) => res.map(r => this.createNewMedServiceJson(r))));
+  };
 
-  getAllServicesNames = () => this.allServices.map(s => s.name);
+  getServiceById(serviceId) : Observable<MedService> {
+    return this._api.getTypeRequest(`services/${serviceId}`).pipe(map(res => this.createNewMedServiceJson(res)));
+  }
+
+  addService(service: MedService) {
+    let b = {
+      "name": service.name,
+      "specialization": 0+service.specialization,
+      "bio": service.description
+    }
+    return this._api.postTypeRequest('services', b);
+  }
+
+  deleteService(id: number) {
+    return this._api.deleteTypeRequest(`services/${id}`);
+  }
+  
 }
 
 const terapevtDesc = "Терапевт проводит осмотр пациента, чтобы оценить его общее состояние здоровья, выявить возможные заболевания или проблемы со здоровьем и назначить соответствующее лечение. Осмотр включает в себя измерение артериального давления, пульса, температуры тела, а также проведение других необходимых исследований для диагностики заболеваний.";

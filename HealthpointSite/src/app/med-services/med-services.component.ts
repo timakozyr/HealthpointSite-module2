@@ -3,6 +3,8 @@ import { MedService } from '../models/med-service';
 import { MedservicesService } from '../services/medservices.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
+import { Specialization } from '../models/specialization';
+import { SpecializationService } from '../services/specialization.service';
 
 @Component({
   selector: 'app-med-services',
@@ -12,7 +14,7 @@ import { AppointmentFormComponent } from '../appointment-form/appointment-form.c
 export class MedServicesComponent {
 
   allServices: MedService[];
-  medService: MedservicesService;
+  specs: Specialization[];
   searchTerm = '';
   breakpoint: number = 3;
   rh = '3:1';
@@ -37,6 +39,8 @@ export class MedServicesComponent {
   }
 
   ngOnInit() {
+    this.medService.getAllServices().subscribe(res => {console.log(res); this.allServices = [...res]});
+    this.specService.getSpecializations().subscribe(res => this.specs = [...res])
     this.resize(window.innerWidth);
   }
   
@@ -44,14 +48,17 @@ export class MedServicesComponent {
     this.resize(event.target.innerWidth);
   }
 
-  constructor(medService: MedservicesService, public dialog: MatDialog) {
-    this.medService = medService;
-    this.allServices = this.medService.getAllServices();
+  constructor(private medService: MedservicesService, private specService: SpecializationService, public dialog: MatDialog) {
+    this.allServices = [];
+    this.specs = [];
   }
 
   openAppointmentForm() {
     this.dialog.open(AppointmentFormComponent);
   }
 
-  filterByCategory = (category: string) => this.medService.filterByCategory(category);
+  filterBySpecialization(specializationName: string) {
+    let filteredSpecs = this.specs.filter(el => el.name.trim().toLowerCase() == specializationName.trim().toLowerCase());
+    return this.allServices.filter(el => filteredSpecs.find(s => s.id === el.id));
+  }
 }

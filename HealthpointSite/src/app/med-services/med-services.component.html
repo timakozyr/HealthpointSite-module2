@@ -8,22 +8,12 @@
     <mat-card-actions>
       <div fxLayout="column">
         <button mat-button [matMenuTriggerFor]="categories">Фильтр услуг</button>
-        <mat-menu #categories="matMenu" appearance="fill">
-            <button mat-menu-item [matMenuTriggerFor]="services">Осмотры</button>
-            <button mat-menu-item [matMenuTriggerFor]="analyzes">Анализы</button>
+        <mat-menu #categories="matMenu" appearance="fill" >
+            <button mat-menu-item *ngFor="let spec of specs"  [matMenuTriggerFor]="services">{{spec.name}}</button>
         </mat-menu>
         <mat-menu #services="matMenu">
             <ng-template matMenuContent let-data="service">
-                <ng-template ngFor let-item [ngForOf]="filterByCategory('services')">
-                    <div (click) = "$event.stopPropagation()">
-                        <mat-checkbox>{{item.name}}</mat-checkbox>
-                    </div>
-                  </ng-template>
-            </ng-template>
-        </mat-menu>
-        <mat-menu #analyzes="matMenu">
-            <ng-template matMenuContent let-data="service">
-                <ng-template ngFor let-item [ngForOf]="filterByCategory('analyzes')">
+                <ng-template ngFor let-item [ngForOf]="filterBySpecialization('Кардиология')">
                     <div (click) = "$event.stopPropagation()">
                         <mat-checkbox>{{item.name}}</mat-checkbox>
                     </div>

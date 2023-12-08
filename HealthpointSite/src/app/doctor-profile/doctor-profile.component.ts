@@ -27,9 +27,8 @@ export class DoctorProfileComponent {
   constructor(public route: ActivatedRoute, doctorsService: DoctorsService, medService: MedservicesService) {
     this.doctor = new Doctor();
     route.params.subscribe(params => {
-      console.log(params);
       this.doctor = doctorsService.getDoctor(params.id)!;
     });
-    this.services = medService.getAllServices();
+    medService.getAllServices().subscribe(res => this.services = res);
   }
 }

@@ -1,7 +1,11 @@
 export class Appointment {
-    username: string = '';
-    doctorType: string = '';
+    id: number;
+    patientId: number;
+    patientFIO: string = '';
+    doctorId: number;
     doctorFIO: string = '';
+    medServiceId: number;
     medService: string = '';
-    date: any;
+    cabinet: number = 0;
+    date: Date;
 }

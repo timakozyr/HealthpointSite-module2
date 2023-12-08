@@ -1,7 +1,7 @@
 export class MedService {
     id: number = 0;
     name: string = "";
-    category: string = "";
+    specialization: number = 0;
     description: string = "";
     pic: string = "";
 };

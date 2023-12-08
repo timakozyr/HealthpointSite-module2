@@ -16,7 +16,7 @@ export class AuthService {
     } 
  
     getToken() { 
-        return localStorage.getItem('access-token'); 
+        return localStorage.getItem('token') ?? ''; 
     }
  
     clearStorage() { 

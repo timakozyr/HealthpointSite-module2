@@ -16,8 +16,15 @@
   <span class="flex-spacer"></span>
   <button fxHide.lt-md mat-button routerLink="/contact" routerLinkActive="active">Контакты</button>
   <span class="flex-spacer"></span>
-  <button fxHide.lt-md mat-raised-button on-click="openAppointmentForm()">Записаться на прием</button>
-  <button fxHide.gt-sm mat-icon-button style="font-size: 1em" [matMenuTriggerFor]="sections"><i class="fa-solid fa-bars"></i></button>
+  <button *ngIf="!checkUser() || user().profile == UserProfileType.user" fxHide.lt-md mat-raised-button on-click="openAppointmentForm()">Записаться на прием</button>
+  <span class="flex-spacer"></span>
+  <div fxFlex fxHide.lt-md>
+    <a fxHide.lt-md *ngIf="checkUser()" mat-fab routerLink="/user">{{user().first_name[0]}}</a>
+    <button *ngIf="!checkUser()" fxHide.lt-md mat-raised-button on-click="openLoginForm()">Войти</button>
+  </div>
+  <button fxHide.gt-sm mat-icon-button style="font-size: 1em;" [matMenuTriggerFor]="sections">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 </mat-toolbar>
 
 <mat-menu #headers="matMenu" appearance="fill">
@@ -28,6 +35,9 @@
 </mat-menu>
 
 <mat-menu #sections="matMenu" appearance="fill">
+  <button *ngIf="!checkUser()" mat-menu-item on-click="openLoginForm()">Войти</button>
+  <button *ngIf="checkUser()" fxHide.gt-sm mat-menu-item style="border-bottom: 1px; border-style: none none solid none;" routerLink="/user">Личный кабинет</button>
+  <span class="flex-spacer"></span>
   <button mat-menu-item routerLink="/home" routerLinkActive="active" *ngIf="this.router.url != '/home'">Главная</button>
   <button mat-menu-item routerLink="/doctors" routerLinkActive="active">Врачи</button>
   <span class="flex-spacer"></span>
@@ -36,5 +46,5 @@
   <button mat-menu-item routerLink="/articles" routerLinkActive="active">Статьи</button>
   <span class="flex-spacer"></span>
   <button mat-menu-item routerLink="/contact" routerLinkActive="active">Контакты</button>
-  <button fxHide.gt-sm mat-menu-item on-click="openAppointmentForm()">Записаться на прием</button>
+  <button *ngIf="!checkUser() || user().profile == UserProfileType.user" fxHide.gt-sm mat-menu-item on-click="openAppointmentForm()">Записаться на прием</button>
 </mat-menu>

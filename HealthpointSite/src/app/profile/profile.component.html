@@ -1,0 +1,68 @@
+<div class="container" *ngIf="!user">
+    <div fxFlex style="display: flex; justify-content: center; align-items: center;">
+        <mat-card style="justify-content: center; align-items: center;">
+            <mat-card-header>
+                <mat-card-title>
+                    <p>ОШИБКА</p>
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>{{errorMsg}}</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+<div class="container"
+  fxLayout="column"
+  fxLayoutGap="10px"
+  *ngIf="user && user.profile != UserProfileType.admin">
+
+  <div fxFlex>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap="20px">
+      <div fxFlex="70">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+                <p>ФИО: {{user.FIO()}}</p>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+                <mat-list-item>
+                    <span matListItemTitle>Почта: {{user.email}}</span>
+                </mat-list-item>
+                <mat-list-item>
+                    <span matListItemTitle>Тип профиля: {{user.profile}}</span>
+                </mat-list-item>
+                <mat-list-item>
+                    <span matListItemTitle>Город: {{user.city}}</span>
+                </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div fxFlex="30">
+        <mat-card>
+            <mat-card-content fxFlex fxLayout="column" fxLayoutGap="20px">
+                <button mat-raised-button on-click="logout()">Выйти из учетной записи</button>
+                <button *ngIf="user.profile === UserProfileType.user" mat-raised-button on-click="openAppForm()">Новая запись</button>
+            </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+  <mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <h3 *ngIf="user.profile === UserProfileType.user">Мои записи</h3>
+            <h3 *ngIf="user.profile === UserProfileType.doctor">Ближайшие записи</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <app-appointments></app-appointments>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<app-admin-panel *ngIf="user && user.profile === UserProfileType.admin"></app-admin-panel>

@@ -7,6 +7,7 @@ import { MedServicesComponent } from '../med-services/med-services.component';
 import { ContactusComponent } from '../contactus/contactus.component';
 import { ArticleComponent } from '../article/article.component';
 import { DoctorProfileComponent } from '../doctor-profile/doctor-profile.component';
+import { ProfileComponent } from '../profile/profile.component';
 
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
@@ -16,5 +17,6 @@ export const routes: Routes = [
     {path: 'services', component: MedServicesComponent},
     {path: 'contact', component: ContactusComponent},
     {path: 'article/:id', component: ArticleComponent},
+    {path: 'user', component: ProfileComponent},
     {path: '', redirectTo: '/home', pathMatch: 'full'}
 ];
