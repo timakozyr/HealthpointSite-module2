@@ -11,7 +11,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = ["user", "specialization"]
+        fields = ["id", "user", "specialization"]
 
     def create(self, validated_data):
         user_data = validated_data.pop("user")
