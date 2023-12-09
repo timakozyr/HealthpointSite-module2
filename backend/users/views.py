@@ -1,9 +1,11 @@
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import F
+
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserDetailSerializer
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -26,11 +28,11 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.filter(id=self.request.user.id)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             if (
-                not request.user.is_admin
-                and request.user.id != serializer.validated_data.get("id")
+                    not request.user.is_admin
+                    and request.user.id != serializer.validated_data.get("id")
             ):
                 return Response(
                     {"detail": "You can only create users for yourself."},
@@ -48,7 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"detail": "You can only edit your own user data."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        serializer = self.serializer_class(user, data=request.data, partial=True)
+        serializer = self.get_serializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
