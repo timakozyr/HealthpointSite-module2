@@ -87,7 +87,7 @@ class AppointmentAPITest(APITestCase):
             "service": self.service.id,
         }
         self.client.force_login(self.user)
-        response1 = self.client.post(url, data, format="json")
+        self.client.post(url, data, format="json")
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -125,7 +125,7 @@ class AppointmentAPITest(APITestCase):
             password="password123",
             role=self.user_role,
         )
-        new_user_token = Token.objects.create(user=new_user)
+        Token.objects.create(user=new_user)
 
         new_appointment = Appointment.objects.create(
             patient=new_user,

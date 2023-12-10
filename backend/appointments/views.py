@@ -28,8 +28,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         if self.request.user.is_admin:
             return Appointment.objects.all()
         if Doctor.objects.filter(user_id=self.request.user.id).exists():
-            return Appointment.objects.filter(
-                doctor__user_id=self.request.user.id)
+            return Appointment.objects.filter(doctor__user_id=self.request.user.id)
 
         return Appointment.objects.filter(patient=self.request.user)
 
@@ -42,13 +41,11 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
             if not request.user.is_admin and appointment_patient != request.user.id:
                 return Response(
-                    {
-                        "detail": "You can only create appointments for yourself."},
+                    {"detail": "You can only create appointments for yourself."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-            if appointment_patient == serializer.validated_data.get(
-                    "doctor").user.id:
+            if appointment_patient == serializer.validated_data.get("doctor").user.id:
                 return Response(
                     {"detail": "You can not make appointment to yourself"},
                     status=status.HTTP_403_FORBIDDEN,
@@ -72,8 +69,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                 {"detail": "You can only edit your own appointments."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        serializer = self.serializer_class(appointment, data=request.data,
-                                           partial=True)
+        serializer = self.serializer_class(appointment, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

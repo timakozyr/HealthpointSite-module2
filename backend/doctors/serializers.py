@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from roles.models import Role
@@ -19,7 +18,7 @@ class DoctorSerializer(serializers.ModelSerializer):
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
-            user.role = Role.objects.get(name='doctor')
+            user.role = Role.objects.get(name="doctor")
             user.save()
             doctor = Doctor.objects.create(user=user, **validated_data)
             return doctor

@@ -1,10 +1,9 @@
 from django.contrib.auth.models import AnonymousUser
-from django.db.models import F
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from .models import User
-from .serializers import UserDetailSerializer, UserSerializer
+from .serializers import UserSerializer
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):

@@ -1,11 +1,9 @@
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from backend import settings
-from users import views
-
 
 urlpatterns = [
     path("admin/", admin.site.urls),

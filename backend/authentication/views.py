@@ -19,7 +19,7 @@ class LoginAPIView(APIView):
         if not user.check_password(request.data["password"]):
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
         token, created = Token.objects.get_or_create(user=user)
-        serializer = UserSerializer(instance=user)
+        UserSerializer(instance=user)
         user_data = {
             "id": user.id,
             "email": user.email,
@@ -28,7 +28,6 @@ class LoginAPIView(APIView):
             "patronymic_name": user.patronymic_name,
             "city": user.city,
             "role": user.role.name,
-            # "profile_pic": user.profile_pic
         }
 
         return Response(
