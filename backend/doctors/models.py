@@ -4,7 +4,6 @@ from specializations.models import Specialization
 from users.models import User
 
 
-# Create your models here.
 class Doctor(models.Model):
     """Doctor in the system."""
 
