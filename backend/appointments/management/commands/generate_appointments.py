@@ -5,12 +5,12 @@ from faker import Faker
 
 from appointments.models import Appointment
 from doctors.models import Doctor
+from roles.models import Role
 from services.models import Service
 from specializations.models import Specialization
 from users.models import User
 
-
-fake = Faker()
+fake = Faker('ru_RU')
 
 
 class Command(BaseCommand):
@@ -19,38 +19,30 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Generating dummy appointments")
 
-        if not User.objects.exists():
-            for _ in range(5):
-                User.objects.create_user(
-                    email=fake.email(),
-                    first_name=fake.first_name(),
-                    last_name=fake.last_name(),
-                    patronymic_name=fake.first_name(),
-                    city=fake.city(),
-                    password="password",
-                )
+        for _ in range(15):
+            User.objects.create_user(
+                email=fake.email(),
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
+                patronymic_name=fake.first_name(),
+                city=fake.city(),
+                password="password",
+            )
+
+        total_users_count = User.objects.count()
+
+        offset = random.randint(0, total_users_count - 5)
+        users = User.objects.all()[offset:offset + 5]
 
         if not Doctor.objects.exists():
             specializations = Specialization.objects.all()
-            users = User.objects.all()
             for user in users:
+                user.role = Role.objects.get(name="doctor")
+                user.save()
                 Doctor.objects.create(
                     user=user,
                     specialization=random.choice(specializations),
                 )
-
-        if not Service.objects.exists():
-            specializations = Specialization.objects.all()
-            for specialization in specializations:
-                services = ["Service A", "Service B", "Service C"]
-                for service_name in services:
-                    existing_service = Service.objects.filter(name=service_name)
-                    if not existing_service:
-                        Service.objects.create(
-                            name=service_name,
-                            specialization=specialization,
-                            bio=fake.text(),
-                        )
 
         users = User.objects.all()
         doctors = Doctor.objects.all()
@@ -60,7 +52,8 @@ class Command(BaseCommand):
             random_user = random.choice(users)
             random_doctor = random.choice(doctors)
             random_service = random.choice(services)
-            appointment_date = fake.date_between(start_date="+1d", end_date="+30d")
+            appointment_date = fake.date_between(start_date="+1d",
+                                                 end_date="+30d")
             appointment_time = fake.time(pattern="%H:%M:%S", end_datetime=None)
             cabinet_number = fake.random_int(min=1, max=10)
 
