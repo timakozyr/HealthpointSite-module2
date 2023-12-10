@@ -10,7 +10,8 @@ from services.models import Service
 from specializations.models import Specialization
 from users.models import User
 
-fake = Faker('ru_RU')
+
+fake = Faker("ru_RU")
 
 
 class Command(BaseCommand):
@@ -32,7 +33,7 @@ class Command(BaseCommand):
         total_users_count = User.objects.count()
 
         offset = random.randint(0, total_users_count - 5)
-        users = User.objects.all()[offset:offset + 5]
+        users = User.objects.all()[offset : offset + 5]
 
         if not Doctor.objects.exists():
             specializations = Specialization.objects.all()
@@ -52,8 +53,7 @@ class Command(BaseCommand):
             random_user = random.choice(users)
             random_doctor = random.choice(doctors)
             random_service = random.choice(services)
-            appointment_date = fake.date_between(start_date="+1d",
-                                                 end_date="+30d")
+            appointment_date = fake.date_between(start_date="+1d", end_date="+30d")
             appointment_time = fake.time(pattern="%H:%M:%S", end_datetime=None)
             cabinet_number = fake.random_int(min=1, max=10)
 

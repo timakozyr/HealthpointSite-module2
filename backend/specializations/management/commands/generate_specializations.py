@@ -3,6 +3,7 @@ from faker import Faker
 
 from specializations.models import Specialization
 
+
 fake = Faker()
 
 
