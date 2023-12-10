@@ -73,7 +73,6 @@ class Command(BaseCommand):
         if not Service.objects.exists():
             specializations = Specialization.objects.all()
             for specialization in specializations:
-                print(specialization)
                 services = SERVICES_NAME_CHOICES[index]
                 for i in range(len(services)):
                     Service.objects.create(
