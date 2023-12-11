@@ -5,6 +5,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
 import { Specialization } from '../models/specialization';
 import { SpecializationService } from '../services/specialization.service';
+import { UserService } from '../services/user.service';
+import { LoginComponent } from '../login/login.component';
+import { MedService } from '../models/med-service';
+import { MedservicesService } from '../services/medservices.service';
 
 @Component({
   selector: 'app-popular-doctors',
@@ -16,22 +20,35 @@ export class PopularDoctorsComponent {
   doctors: Doctor[];
   visibility = 'shown';
 
-  constructor(public doctorService: DoctorsService, public specService: SpecializationService, public dialog: MatDialog) {
+  constructor(public doctorService: DoctorsService,
+              private servService: MedservicesService,
+              public specService: SpecializationService,
+              public dialog: MatDialog) {
     this.doctors = [];
     this.doctorTypes = [];
   }
 
   getDoctorsBySpec(specId) {    
-    return this.doctors.filter(d => d.specializationId == specId).slice(0, 3);
+    return this.doctors.filter(d => d.specialization == specId).slice(0, 3);
   }
   
 
   ngOnInit() {
-    this.specService.getSpecializations().subscribe(res => this.doctorTypes = [...res]);
-    this.doctorService.getDoctors().subscribe(res => this.doctors = [...res]);
+    this.doctorService.getDoctors().subscribe(res => {
+      this.doctors = [...res];
+      this.specService.getSpecializations().subscribe(res =>
+        this.doctorTypes = [...res.filter(r => this.doctors.find(s => s.specialization == r.id))]);
+    });
   }
 
-  openAppointmentForm() {
-    this.dialog.open(AppointmentFormComponent);
+  checkUser() {
+    return UserService.checkUser();
+  }
+
+  openAppointmentForm(doctorId: number) {
+    if (this.checkUser())
+      this.dialog.open(AppointmentFormComponent, {data: {doctorId: doctorId}});
+    else
+      this.dialog.open(LoginComponent, {width: '600px'});
   }
 }

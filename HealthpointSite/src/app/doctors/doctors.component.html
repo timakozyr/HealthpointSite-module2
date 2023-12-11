@@ -22,12 +22,12 @@
                   <app-star-rating style="color: rgba(0, 0, 0, 0.5); "></app-star-rating>
                 </div>
                 <div fxLayout.gt-sm="row" fxLayout.lt-md="column" fxLayoutAlign="start center" style="margin-left: 5%">
-                  <p>Специализация: {{doctor.specialization}}</p>
-                  <a mat-icon-button #tooltip="matTooltip" matTooltip="{{doctor.specializationDesc}}">
+                  <p>Специализация: {{getSpecializationName(doctor.specialization)}}</p>
+                  <a mat-icon-button #tooltip="matTooltip" matTooltip="{{getSpecializationDesc(doctor.specialization)}}">
                     <mat-icon>info</mat-icon>
                   </a>
                 </div>
-                <button mat-raised-button color="accent" [routerLink]="['/doctors/', doctor.id]" routerLink="active-link">Перейти в профиль</button>
+                <button mat-raised-button color="accent" [routerLink]="['/doctors/', doctor.doctorId]" routerLink="active-link">Перейти в профиль</button>
               </div>
             </mat-card>
           </mat-grid-tile>

@@ -1,51 +1,98 @@
 <div class="container"
   fxLayout="column"
-  fxLayoutGap="10px">
-  <!-- FOR BIG/MEDIUM SCREENS SHOW TABLE -->
-  <table fxHide.lt-sm mat-table matSort matTableResponsive [dataSource]="appointments" >
+  fxLayoutGap="10px"
+  *ngIf="user">
 
-    <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef>Дата</th>
-      <td mat-cell *matCellDef="let appointment">{{appointment.date}}</td>
-    </ng-container>
-    <ng-container matColumnDef="medService">
-      <th mat-header-cell *matHeaderCellDef>Процедура</th>
-      <td mat-cell *matCellDef="let appointment">{{getServiceById(appointment.medServiceId)?.name}}</td>
-    </ng-container>
+  <div fxFlex>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap="20px">
+      <div fxFlex="70">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+                <p>{{user.FIO}}</p>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+                <mat-list-item>
+                    <span matListItemTitle>Почта: {{user.email}}</span>
+                </mat-list-item>
+                <mat-list-item>
+                    <span matListItemTitle>Город: {{user.city}}</span>
+                </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div fxFlex="30">
+        <mat-card>
+            <mat-card-content fxFlex fxLayout="column" fxLayoutGap="20px">
+                <button mat-raised-button on-click="logout()">Выйти из учетной записи</button>
+                <button *ngIf="user.profile === UserProfileType.user" mat-raised-button on-click="openAppForm()">Новая запись</button>
+            </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+  <mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <h3 *ngIf="user.profile === UserProfileType.user">Мои записи</h3>
+            <h3 *ngIf="user.profile === UserProfileType.doctor">Ближайшие записи</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="container" fxLayout="column" fxLayoutGap="10px">
+        <!-- FOR BIG/MEDIUM SCREENS SHOW TABLE -->
+        <table fxHide.lt-sm mat-table matSort matTableResponsive [dataSource]="appointments" >
+      
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Дата</th>
+            <td mat-cell *matCellDef="let appointment">{{getDateString(appointment.date, appointment.time)}}</td>
+          </ng-container>
+          <ng-container matColumnDef="medService">
+            <th mat-header-cell *matHeaderCellDef>Процедура</th>
+            <td mat-cell *matCellDef="let appointment">{{getServiceById(appointment.medServiceId)?.name}}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="visiting">
+            <th mat-header-cell *matHeaderCellDef>{{user.profile == UserProfileType.doctor ? "Пациент" : "Доктор"}}</th>
+            <td mat-cell *matCellDef="let appointment">{{user.profile == UserProfileType.doctor ? getUserById(appointment.patientId).FIO : getDoctorById(appointment.doctorId).FIO}}</td>
+          </ng-container>
+      
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let appointment">
+              <button mat-flat-button on-click="deleteAppointment(appointment.id)">
+                <mat-icon>delete</mat-icon>
+                 Отменить
+              </button>
+              <button mat-flat-button on-click="openEditAppForm(appointment.id)">
+                <mat-icon>edit</mat-icon>
+                 Изменить
+              </button>
+            </td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+        </table>
     
-    <ng-container matColumnDef="visiting">
-      <th mat-header-cell *matHeaderCellDef>{{user.profile == UserProfileType.doctor ? "Пациент" : "Доктор"}}</th>
-      <td mat-cell *matCellDef="let appointment">{{user.profile == UserProfileType.doctor ? getUserById(appointment.patientId).FIO() : getDoctorById(appointment.doctorId)?.FIO}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef>
-        <button mat-flat-button>
-          <mat-icon>delete</mat-icon>
-           Отменить
-        </button>
-        <button mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-  </table>
-
-  <!-- FOR SMALL SCREENS SHOW GRID LIST -->
-  <mat-grid-list fxHide.gt-xs [cols]="breakpoint" rowHeight="{{rh}}" (window:resize)="onResize($event)" [gutterSize]="'0px'">
-    <mat-grid-tile dense *ngFor="let appointment of appointments">
-      <mat-card fxLayout="column" style="margin: 1%; padding: 5%; min-height: 50%; max-height: 100%; width: 100%;">
-        <div fxLayout="column" fxLayoutAlign="center">
-          <h4 align="center">{{appointment['date']}}</h4>
-          <h4 align="center">{{appointment['medService']}}</h4>
-          <p align="center">{{user.profile == UserProfileType.doctor ? "Пациент" : "Доктор"}}: {{user.profile == UserProfileType.doctor ? appointment['doctorFIO'] : appointment['username']}}</p>
-          <button align="center" mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
-          <button align="center" mat-flat-button><mat-icon>delete</mat-icon> Отменить</button>
-        </div>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+        <!-- FOR SMALL SCREENS SHOW GRID LIST -->
+        <mat-grid-list fxHide.gt-xs [cols]="breakpoint" rowHeight="{{rh}}" (window:resize)="onResize($event)" [gutterSize]="'0px'">
+          <mat-grid-tile dense *ngFor="let appointment of appointments">
+            <mat-card fxLayout="column" style="margin: 1%; padding: 5%; min-height: 50%; max-height: 100%; width: 100%;">
+              <div fxLayout="column" fxLayoutAlign="center">
+                <h4 align="center">{{getDateString(appointment.date, appointment.time)}}</h4>
+                <h4 align="center">{{getServiceById(appointment.medServiceId)!.name}}</h4>
+                <p align="center">{{user.profile == UserProfileType.doctor ? "Пациент" : "Доктор"}}: {{user.profile == UserProfileType.doctor ? getUserById(appointment.patientId).FIO : getDoctorById(appointment.doctorId).FIO}}</p>
+                <button align="center" mat-flat-button on-click="openEditAppForm(appointment.id)"><mat-icon>edit</mat-icon> Изменить</button>
+                <button align="center" mat-flat-button on-click="deleteAppointment(appointment.id)"><mat-icon>delete</mat-icon> Отменить</button>
+              </div>
+            </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
-

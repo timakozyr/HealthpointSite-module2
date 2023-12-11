@@ -36,7 +36,7 @@ export class AdmNewServiceComponent {
   addService() {
     try {
       this.medService.addService(this.service).subscribe((res: any) => {
-        this.snackBar.open('Успешная регистрация!', 'Скрыть', {
+        this.snackBar.open('Успешно добавлено!', 'Скрыть', {
           duration: 3000
         });
         this.service.id = res.id;

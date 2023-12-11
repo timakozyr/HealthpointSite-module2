@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { User, UserProfile } from '../models/user';
 import { ApiService } from './api.service';
 import { AuthService } from './authservice.service';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class UserService {
 
   static CurrentUser : User;
 
-  static checkUser = () => localStorage.getItem("user") != null && UserService.CurrentUser != undefined;
+  static checkUser = () => localStorage.getItem("user") != null;
 
   createNewUserJson(input_user: any) {
     var to_return = new User;
@@ -25,9 +26,21 @@ export class UserService {
     to_return.last_name = input_user.last_name;
     to_return.patronymics = input_user.patronymic_name;
     to_return.city = input_user.city;
+    to_return.FIO = to_return.last_name + " " + to_return.first_name + " " + to_return.patronymics;
 
     return to_return;
-}
+  }
+
+  userToJson(user: User) {
+    return {
+      "email" : user.email,
+      "first_name": user.first_name,
+      "patronymic_name": user.patronymics,
+      "last_name": user.last_name,
+      "city": user.city,
+      "password": user.password
+    };
+  }
 
   getAllUsers() : Observable<User[]> {
     return this._api.getTypeRequest('users').pipe(map((res: any) => res.map(r => this.createNewUserJson(r))));
@@ -42,39 +55,18 @@ export class UserService {
   }
 
   login(email: string, password: string) {
-    this._api.postTypeRequest('auth/login', {"email": email, "password": password}).subscribe((res: any) => { 
-      if(res.token){ 
-        let createdUser = this.createNewUserJson(res.user);
-        this._auth.setDataInLocalStorage('token', res.token);
-        this._auth.setDataInLocalStorage('user', createdUser);
-        UserService.CurrentUser = createdUser;
-      } 
-    }, err => {
-      throw err;
-    });
+    return this._api.postTypeRequest('auth/login', {"email": email, "password": password});
+  }
+
+  registerPatient(user: User) {
+    let b = this.userToJson(user);
+    
+    return this._api.postTypeRequest('users', b);
   }
 
   register(user: User) {
-    let b = {
-      "email" : user.email,
-      "first_name": user.first_name,
-      "patronymic_name": user.patronymics,
-      "last_name": user.last_name,
-      "city": user.city,
-      "password": user.password
-    }
+    let b = this.userToJson(user);
     
-    this._api.postTypeRequest('auth/signup', b).subscribe((res: any) => {
-      if (res) {
-            let createdUser = this.createNewUserJson(res.user);
-            this._auth.setDataInLocalStorage('token', res.token);
-            this._auth.setDataInLocalStorage('user', createdUser);
-            UserService.CurrentUser = createdUser;
-            
-          } 
-        }, err => { 
-          throw err;
-        }
-    );
+    return this._api.postTypeRequest('auth/signup', b);
   }
 }

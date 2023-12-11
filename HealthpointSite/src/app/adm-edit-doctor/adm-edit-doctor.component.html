@@ -1,6 +1,6 @@
 <div fxLayoutGap="10px" style="width:100%; height:100%">
     <div fxLayout="row" fxLayout.xs="row">
-        <p style="margin: 10px">Регистрация нового пациента</p>
+        <p style="margin: 10px">Изменить доктора</p>
         <span class="flex-spacer"></span>
         <button mat-flat-button color="warn" mat-dialog-close style="margin: 10px">&times;</button>
     </div>
@@ -8,20 +8,6 @@
         <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
             <mat-dialog-content>
                 <div fxFlex style="overflow-y: hidden;" fxLayoutGap="10">
-                    <mat-form-field>
-                        <mat-label>Электронная почта</mat-label>
-                        <input matInput placeholder="Электронная почта" type="email"
-                            [(ngModel)]="user.email" name="email"
-                            #email="ngModel" required>
-                        <mat-error *ngIf="email.errors?.required">Введите email!</mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Пароль</mat-label>
-                        <input matInput placeholder="Пароль" type="password"
-                            [(ngModel)]="user.password" name="password"
-                            #password="ngModel" required>
-                        <mat-error *ngIf="password.errors?.required">Введите пароль!</mat-error>
-                    </mat-form-field>
                     <mat-form-field>
                         <mat-label>Фамилия</mat-label>
                         <input matInput placeholder="Фамилия" type="text"
@@ -48,6 +34,15 @@
                         [(ngModel)]="user.city" name="city"
                         #city="ngModel" required>
                         <mat-error *ngIf="city.errors?.required">Введите город!</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Специализация</mat-label>
+                        <mat-select [(ngModel)]="doctor.specialization" name="specialization" placeholder="Специализация" #specialization="ngModel" required>
+                            <mat-option *ngFor="let specializationName of specs" [value]="specializationName.id">
+                                {{specializationName.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="specialization.errors?.required">Выберите специализацию врача!</mat-error>
                     </mat-form-field>
                 </div>
             </mat-dialog-content>

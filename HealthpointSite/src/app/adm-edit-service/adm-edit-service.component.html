@@ -1,6 +1,6 @@
 <div fxLayoutGap="10px" style="width:100%; height:100%">
     <div fxLayout="row" fxLayout.xs="row">
-        <p style="margin: 10px">Регистрация новой услуги</p>
+        <p style="margin: 10px">Изменение услуги</p>
         <span class="flex-spacer"></span>
         <button mat-flat-button color="warn" mat-dialog-close style="margin: 10px">&times;</button>
     </div>
@@ -12,7 +12,7 @@
                         <mat-label>Название</mat-label>
                         <input matInput placeholder="Название" type="text"
                             [(ngModel)]="service.name" name="serviceName"
-                            #serviceName="ngModel" required>
+                            #serviceName="ngModel" required disabled>
                         <mat-error *ngIf="serviceName.errors?.required">Введите название!</mat-error>
                     </mat-form-field>
                     <mat-form-field>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdmDelAppComponent } from './adm-del-app.component';
+import { AdmEditDoctorComponent } from './adm-edit-doctor.component';
 
-describe('AdmDelAppComponent', () => {
-  let component: AdmDelAppComponent;
-  let fixture: ComponentFixture<AdmDelAppComponent>;
+describe('AdmEditDoctorComponent', () => {
+  let component: AdmEditDoctorComponent;
+  let fixture: ComponentFixture<AdmEditDoctorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AdmDelAppComponent ]
+      declarations: [ AdmEditDoctorComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdmDelAppComponent);
+    fixture = TestBed.createComponent(AdmEditDoctorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

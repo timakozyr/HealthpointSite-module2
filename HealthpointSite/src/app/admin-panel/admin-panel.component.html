@@ -43,7 +43,7 @@
                       <mat-icon>delete</mat-icon>
                        Удалить
                     </button>
-                    <button mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
+                    <button mat-flat-button on-click="openEditServiceForm(service.id)"><mat-icon>edit</mat-icon> Изменить</button>
                   </td>
                 </ng-container>
             
@@ -57,27 +57,27 @@
 
                 <ng-container matColumnDef="date">
                   <th mat-header-cell *matHeaderCellDef>Дата</th>
-                  <td mat-cell *matCellDef="let appointment">{{appointment.date}}</td>
+                  <td mat-cell *matCellDef="let appointment">{{getDateString(appointment.date, appointment.time)}}</td>
                 </ng-container>
                 
                 <ng-container matColumnDef="medService">
                   <th mat-header-cell *matHeaderCellDef>Процедура</th>
-                  <td mat-cell *matCellDef="let appointment">{{appointment.medServiceId}}</td>
+                  <td mat-cell *matCellDef="let appointment">{{getServiceById(appointment.medServiceId)?.name}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="doctorType">
-                    <th mat-header-cell *matHeaderCellDef>Врач</th>
-                    <td mat-cell *matCellDef="let appointment">{{appointment.doctorFIO}}</td>
+                    <th mat-header-cell *matHeaderCellDef>Категория</th>
+                    <td mat-cell *matCellDef="let appointment">{{getSpecById(getServiceById(appointment.medServiceId)!.specialization)}}</td>
                 </ng-container>
                 
                 <ng-container matColumnDef="doctor">
-                  <th mat-header-cell *matHeaderCellDef>ФИО врача</th>
-                  <td mat-cell *matCellDef="let appointment">{{appointment.doctorFIO}}</td>
+                  <th mat-header-cell *matHeaderCellDef>Врач</th>
+                  <td mat-cell *matCellDef="let appointment">{{getDoctorById(appointment.doctorId)?.FIO}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="patient">
                     <th mat-header-cell *matHeaderCellDef>Пациент</th>
-                    <td mat-cell *matCellDef="let appointment">{{appointment.patientFIO}}</td>
+                    <td mat-cell *matCellDef="let appointment">{{getUserById(appointment.patientId)?.FIO}}</td>
                   </ng-container>
             
                 <ng-container matColumnDef="actions">
@@ -87,7 +87,10 @@
                       <mat-icon>delete</mat-icon>
                        Отменить
                     </button>
-                    <button mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
+                    <button mat-flat-button on-click="openEditAppForm(appointment.id)">
+                      <mat-icon>edit</mat-icon>
+                       Изменить
+                    </button>
                   </td>
                 </ng-container>
             
@@ -106,17 +109,17 @@
                 
                 <ng-container matColumnDef="specialization">
                   <th mat-header-cell *matHeaderCellDef>Специализация</th>
-                  <td mat-cell *matCellDef="let doctor">{{doctor.specialization}}</td>
+                  <td mat-cell *matCellDef="let doctor">{{getSpecById(doctor.specializationId)}}</td>
                 </ng-container>
             
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef></th>
                   <td mat-cell *matCellDef="let doctor">
-                    <button mat-flat-button on-click="deleteDoctor(doctor.id)">
+                    <button mat-flat-button on-click="deleteDoctor(doctor.doctorId)">
                       <mat-icon>delete</mat-icon>
                        Удалить
                     </button>
-                    <button mat-flat-button><mat-icon>edit</mat-icon> Изменить</button>
+                    <button mat-flat-button on-click="openEditDoctorForm(doctor.doctorId, doctor.userId)"><mat-icon>edit</mat-icon> Изменить</button>
                   </td>
                 </ng-container>
             

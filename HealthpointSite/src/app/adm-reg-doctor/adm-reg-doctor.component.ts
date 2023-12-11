@@ -1,11 +1,11 @@
 import { Component, EventEmitter } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { User, UserProfile } from '../models/user';
 import { DoctorsService } from '../services/doctors.service';
 import { Router } from '@angular/router';
 import { SpecializationService } from '../services/specialization.service';
 import { Specialization } from '../models/specialization';
+import { Doctor } from '../models/doctor';
 
 @Component({
   selector: 'app-adm-reg-doctor',
@@ -13,7 +13,7 @@ import { Specialization } from '../models/specialization';
   styleUrls: ['./adm-reg-doctor.component.scss']
 })
 export class AdmRegDoctorComponent {
-  user = new User(UserProfile.doctor);
+  doctor: Doctor;
   specializationId: number;
   specs: Specialization[];
 
@@ -23,6 +23,7 @@ export class AdmRegDoctorComponent {
               private specService: SpecializationService,
               public snackBar: MatSnackBar) {
                 this.specs = [];
+                this.doctor = new Doctor;
               }
 
   ngOnInit(): void {
@@ -35,11 +36,12 @@ export class AdmRegDoctorComponent {
 
   register() {
     try {
-      this.doctorsService.register(this.user, this.specializationId).subscribe((res: any) => {
+      this.doctorsService.register(this.doctor).subscribe((res: any) => {
         this.snackBar.open('Успешная регистрация!', 'Скрыть', {
           duration: 3000
         })
-        this.user.id = res.user.id;
+        this.doctor.FIO = this.doctor.last_name + " " + this.doctor.first_name + " " + this.doctor.patronymics;
+        this.doctor.id = res.user.id;
         this.dialogRef.close();
         this._router.navigateByUrl('/user');
       });

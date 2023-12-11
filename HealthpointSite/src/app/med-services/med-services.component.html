@@ -9,13 +9,13 @@
       <div fxLayout="column">
         <button mat-button [matMenuTriggerFor]="categories">Фильтр услуг</button>
         <mat-menu #categories="matMenu" appearance="fill" >
-            <button mat-menu-item *ngFor="let spec of specs"  [matMenuTriggerFor]="services">{{spec.name}}</button>
+            <button mat-menu-item *ngFor="let spec of specs" (mouseover)="setSelectedSpec(spec)" [matMenuTriggerFor]="services">{{spec.name}}</button>
         </mat-menu>
-        <mat-menu #services="matMenu">
-            <ng-template matMenuContent let-data="service">
-                <ng-template ngFor let-item [ngForOf]="filterBySpecialization('Кардиология')">
+        <mat-menu #services="matMenu" >
+            <ng-template matMenuContent let-data="service"*ngIf="filterBySpecialization(selectedSpec).length > 0">
+                <ng-template ngFor let-item [ngForOf]="filterBySpecialization(selectedSpec)">
                     <div (click) = "$event.stopPropagation()">
-                        <mat-checkbox>{{item.name}}</mat-checkbox>
+                        <mat-checkbox value="item.id" (change)="changeSelected($event, item.id)" [checked]="serviceIsSelected(item.id)">{{item.name}}</mat-checkbox>
                     </div>
                   </ng-template>
             </ng-template>
@@ -26,11 +26,11 @@
       <div class="container" fxLayout="column" fxLayoutGap="1%">
         <mat-form-field>
           <mat-label>Введите название услуги</mat-label>
-          <input matInput [(ngModel)]="searchTerm">
+          <input matInput [(ngModel)]="searchTerm" (input)="filterServices()">
           <mat-icon matPrefix>search</mat-icon>
         </mat-form-field>
         <mat-grid-list [cols]="breakpoint" rowHeight="{{rh}}" (window:resize)="onResize($event)" [gutterSize]="'0px'">
-          <mat-grid-tile dense *ngFor="let service of allServices">
+          <mat-grid-tile dense *ngFor="let service of selectedServices">
             <mat-card fxLayout="column" style="margin: 1%; padding: 5%; min-height: 50%; max-height: 100%; width: 100%;">
               <div fxLayout.gt-sm="row" fxLayout.lt-md="column" fxLayoutAlign="center center">
                   <h4 align="center">{{service.name}}</h4>
@@ -38,7 +38,7 @@
                     <mat-icon>info</mat-icon>
                   </a>
               </div>
-              <button mat-raised-button on-click="openAppointmentForm()" color="accent">Записаться</button>
+              <button mat-raised-button on-click="openAppointmentForm(service.id)" color="accent">Записаться</button>
             </mat-card>
           </mat-grid-tile>
         </mat-grid-list>

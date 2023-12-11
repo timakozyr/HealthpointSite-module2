@@ -5,6 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
 import { Specialization } from '../models/specialization';
 import { SpecializationService } from '../services/specialization.service';
+import { LoginComponent } from '../login/login.component';
+import { UserService } from '../services/user.service';
+import { DoctorsService } from '../services/doctors.service';
 
 @Component({
   selector: 'app-med-services',
@@ -13,9 +16,11 @@ import { SpecializationService } from '../services/specialization.service';
 })
 export class MedServicesComponent {
 
+  selectedSpec: number;
   allServices: MedService[];
+  selectedServices: MedService[];
   specs: Specialization[];
-  searchTerm = '';
+  searchTerm: string;
   breakpoint: number = 3;
   rh = '3:1';
 
@@ -39,26 +44,67 @@ export class MedServicesComponent {
   }
 
   ngOnInit() {
-    this.medService.getAllServices().subscribe(res => {console.log(res); this.allServices = [...res]});
-    this.specService.getSpecializations().subscribe(res => this.specs = [...res])
     this.resize(window.innerWidth);
+    this.searchTerm = '';
+    this.doctorsService.getDoctors().subscribe(res => {
+      let doctors = [...res];
+      this.medService.getAllServices().subscribe(res => {
+        this.allServices = [...res.filter(s => doctors.find(d => d.specialization == s.specialization))];
+        this.filterServices();
+      });
+      this.specService.getSpecializations().subscribe(res => this.specs = [...res.filter(s => this.allServices.find(sr => sr.specialization == s.id))]);
+    });
+  }
+
+  setSelectedSpec(spec) {
+    this.selectedSpec = spec.id;
   }
   
   onResize(event) {
     this.resize(event.target.innerWidth);
   }
 
-  constructor(private medService: MedservicesService, private specService: SpecializationService, public dialog: MatDialog) {
+  constructor(private specService: SpecializationService, private medService: MedservicesService, private doctorsService: DoctorsService, public dialog: MatDialog) {
     this.allServices = [];
     this.specs = [];
+    this.selectedServices = [];
+    this.searchTerm = '';
   }
 
-  openAppointmentForm() {
-    this.dialog.open(AppointmentFormComponent);
+  checkUser() {
+    return UserService.checkUser();
   }
 
-  filterBySpecialization(specializationName: string) {
-    let filteredSpecs = this.specs.filter(el => el.name.trim().toLowerCase() == specializationName.trim().toLowerCase());
-    return this.allServices.filter(el => filteredSpecs.find(s => s.id === el.id));
+  openAppointmentForm(serviceId: number) {
+    if (this.checkUser()) {
+      this.dialog.open(AppointmentFormComponent, {data: {serviceId: serviceId}});
+    } 
+    else
+      this.dialog.open(LoginComponent, {width: '600px'});
+  }
+
+  filterBySpecialization(specializationId: number) {
+    if (specializationId == null) return this.allServices;
+    return this.allServices.filter(el => el.specialization == specializationId);
+  }
+
+  filterServices() {
+    if (this.searchTerm == '') {
+      this.selectedServices = [...this.allServices].sort((s1, s2) => s1.id - s2.id);
+    } else {
+      this.selectedServices = [...this.allServices.filter(el => el.name.trim().toLowerCase().startsWith(this.searchTerm.trim().toLowerCase()))].sort((s1, s2) => s1.id - s2.id);
+    }
+  }
+
+  serviceIsSelected(id: number) {
+    return this.selectedServices.findIndex(s => s.id == id) > -1 ? true : null;
+  }
+
+  changeSelected(event, id: number) {
+    if (event.checked) {
+      this.selectedServices = [...this.selectedServices, (this.allServices.find(s => s.id == id)!)].sort((s1, s2) => s1.id - s2.id);
+    } else {
+      this.selectedServices = [...this.selectedServices.filter(s => s.id != id)].sort((s1, s2) => s1.id - s2.id);
+    }
   }
 }

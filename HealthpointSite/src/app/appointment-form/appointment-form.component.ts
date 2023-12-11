@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { Appointment } from '../models/appointment';
 import { DoctorsService } from '../services/doctors.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MedservicesService } from '../services/medservices.service';
 import { UserService } from '../services/user.service';
 import { SpecializationService } from '../services/specialization.service';
@@ -28,8 +28,10 @@ export class AppointmentFormComponent {
   doctors: Doctor[];
   user: User;
   patients: User[];
+  minDate: Date;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<AppointmentFormComponent>,
     public doctorsService: DoctorsService,
     public specService: SpecializationService,
@@ -44,10 +46,19 @@ export class AppointmentFormComponent {
     this.serviceTypes = [];
     this.doctors = [];
     this.appointment = new Appointment;
+    this.user = new User;
   }
 
-  getDoctorsBySpec(specId) {
-    return this.doctors.filter(d => d.specializationId == specId);
+  checkUser = () => UserService.checkUser();
+
+  getDoctorsBySpec(serviceId) {
+    let specId = this.serviceTypes.find(s => s.id == serviceId)?.specialization;
+    return this.doctors.filter(d => d.specialization == specId);
+  }
+
+  getServicesBySpec(doctorId) {
+    let specId = this.doctors.find(d => d.doctorId == doctorId)?.specialization;
+    return this.serviceTypes.filter(s => s.specialization == specId);
   }
 
   getPatients() {
@@ -55,22 +66,40 @@ export class AppointmentFormComponent {
   }
 
   ngOnInit(): void {
-    if (UserService.checkUser() && UserService.CurrentUser.profile != UserProfile.admin) {
-      this.appointment.patientFIO = UserService.CurrentUser.FIO();
-      this.appointment.patientId = UserService.CurrentUser.id;
-    }
+    this.appointment = new Appointment;
+    this.minDate = new Date();
+
+    this.specService.getSpecializations().subscribe(res =>
+      this.doctorTypes = [...res]
+    );
+
+    this.doctorsService.getDoctors().subscribe(res => {
+      this.doctors = [...res];
+      if (this.data != null && this.data.doctorId != undefined) {
+        this.appointment.doctorId = this.data.doctorId;
+      };
+      this.medService.getAllServices().subscribe(res => {
+        this.serviceTypes = [...res.filter(s => this.doctors.find(d => d.specialization == s.specialization))];
+        if (this.data != null && this.data.serviceId != undefined) {
+          this.appointment.medServiceId = this.data.serviceId;
+        }
+      });
+    });
+
     this.user = UserService.CurrentUser;
 
-    this.specService.getSpecializations().subscribe(res => this.doctorTypes = [...res]);
-    this.medService.getAllServices().subscribe(res => this.serviceTypes = [...res])
-    this.doctorsService.getDoctors().subscribe(res => this.doctors = [...res]);
-    this.userService.getAllUsers().subscribe(res => this.patients = [...res]);//.filter(u => u.profile == UserProfile.user));
+    if (UserService.checkUser() && UserService.CurrentUser.profile != UserProfile.admin) {
+      this.appointment.patientId = UserService.CurrentUser.id;
+    }
+
+    if (UserService.checkUser() && UserService.CurrentUser.profile == UserProfile.admin)
+      this.userService.getAllUsers().subscribe(res => this.patients = [...res]);
   }
 
   onSubmit(): void {
     try {
       this.appointmentService.addAppointment(this.appointment).subscribe((res: any) => {
-        this.snackBar.open('Успешная регистрация!', 'Скрыть', {
+        this.snackBar.open('Успешно добавлено!', 'Скрыть', {
           duration: 3000
         })
         this.appointment.id = res.id;

@@ -1,15 +1,59 @@
 <div fxLayoutGap="10px">
     <div fxLayout="row" fxLayout.xs="row">
-        <p style="margin: 10px">Редактировать заявку</p>
+        <p style="margin: 10px">Изменить запись на прием</p>
         <span class="flex-spacer"></span>
         <button mat-raised-button color="warn" mat-dialog-close style="margin: 10px">&times;</button>
     </div>
     <div>
-        <mat-form-field>
-            <input matInput placeholder="Номер заявки" type="number"
-                [(ngModel)]="appointmentId" name="appointment"
-                #appointment="ngModel" required>
-            <mat-error *ngIf="appointment.errors?.required">Номер заявки должен быть указан</mat-error>
-        </mat-form-field>
+        <form #feedbackForm="ngForm" (ngSubmit)="onSubmit()">
+            <mat-dialog-content>
+                <div fxFlex fxLayout="column" fxLayoutGap="10">
+                    <mat-form-field *ngIf="currentUser.profile == UserProfileType.admin">
+                        <mat-label>ФИО пациента</mat-label>
+                        <mat-select [(ngModel)]="appointment.patientId" name="userFIO" #userFIO="ngModel" required>
+                            <mat-option *ngFor="let patient of getPatients()" [value]="patient.id">
+                                {{patient.FIO}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="userFIO.errors?.required">Выберите пациента</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Услуга</mat-label>
+                        <mat-select [(ngModel)]="appointment.medServiceId" name="selectedService" #selectedService="ngModel" required>
+                            <mat-option *ngFor="let service of serviceTypes" [value]="service.id">
+                                {{service.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="selectedService.errors?.required">Выберите услугу</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>ФИО врача</mat-label>
+                        <mat-select [(ngModel)]="appointment.doctorId" name="doctorFIO" #doctorFIO="ngModel" required>
+                            <mat-option *ngFor="let doctor of getDoctorsBySpec(appointment.medServiceId)" [value]="doctor.doctorId">
+                                {{doctor.FIO}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="doctorFIO.errors?.required">Выберите врача</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Дата</mat-label>
+                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" required>
+                        <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
+                        <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+                        <mat-error *ngIf="selectedDate.errors?.required">Выберите время</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Время</mat-label>
+                        <input matInput type="time" step="60" [(ngModel)]="appointment.time" placeholder="HH:mm" name="selectedTime" #selectedTime="ngModel" required>
+                    </mat-form-field>
+                </div>
+            </mat-dialog-content>
+            <mat-dialog-actions>
+                <span class="flex-spacer"></span>
+                <button mat-button mat-dialog-close>Отмена</button>
+                <button mat-button type="submit"
+                [disabled]="feedbackForm.form.invalid">Подтвердить</button>
+            </mat-dialog-actions>
+        </form>
     </div>
 </div>

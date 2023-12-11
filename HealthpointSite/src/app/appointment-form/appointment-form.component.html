@@ -8,25 +8,19 @@
         <form #feedbackForm="ngForm" (ngSubmit)="onSubmit()">
             <mat-dialog-content>
                 <div fxFlex fxLayout="column" fxLayoutGap="10">
-                    <mat-form-field *ngIf="user.profile == UserProfileType.admin">
+                    <mat-form-field *ngIf="checkUser() && user.profile == UserProfileType.admin">
                         <mat-label>ФИО пациента</mat-label>
                         <mat-select [(ngModel)]="appointment.patientId" name="userFIO" #userFIO="ngModel" required>
-                            <mat-option *ngFor="let patient of getPatients()" [value]="patient.id">
-                                {{patient.FIO()}}
+                            <mat-option *ngFor="let patient of patients" [value]="patient.id">
+                                {{patient.FIO}}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="userFIO.errors?.required">Выберите пациента</mat-error>
                     </mat-form-field>
-                    <mat-form-field *ngIf="user.profile != UserProfileType.admin">
-                        <input matInput placeholder="ФИО" type="text"
-                            [(ngModel)]="appointment.patientFIO" name="username"
-                            #username="ngModel" required>
-                        <mat-error *ngIf="username.errors?.required">ФИО должно быть указано</mat-error>
-                    </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Тип услуги</mat-label>
+                        <mat-label>Услуга</mat-label>
                         <mat-select [(ngModel)]="appointment.medServiceId" name="selectedService" #selectedService="ngModel" required>
-                            <mat-option *ngFor="let service of serviceTypes" [value]="service.id">
+                            <mat-option *ngFor="let service of (appointment.doctorId != undefined ? getServicesBySpec(appointment.doctorId) : serviceTypes)" [value]="service.id">
                                 {{service.name}}
                             </mat-option>
                         </mat-select>
@@ -35,7 +29,7 @@
                     <mat-form-field>
                         <mat-label>ФИО врача</mat-label>
                         <mat-select [(ngModel)]="appointment.doctorId" name="doctorFIO" #doctorFIO="ngModel" required>
-                            <mat-option *ngFor="let doctor of getDoctorsBySpec(appointment.medServiceId)" [value]="doctor.id">
+                            <mat-option *ngFor="let doctor of (appointment.medServiceId != undefined ? getDoctorsBySpec(appointment.medServiceId) : doctors)" [value]="doctor.doctorId">
                                 {{doctor.FIO}}
                             </mat-option>
                         </mat-select>
@@ -43,9 +37,13 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Дата</mat-label>
-                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date" name="selectedDate">
+                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" [min]="minDate">
                         <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
                         <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Время</mat-label>
+                        <input matInput type="time" [(ngModel)]="appointment.time" placeholder="HH:mm" name="selectedTime" #selectedTime="ngModel" required>
                     </mat-form-field>
                 </div>
             </mat-dialog-content>

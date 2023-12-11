@@ -45,7 +45,6 @@ import { MedServicesComponent } from './med-services/med-services.component';
 import { MedArticlesComponent } from './med-articles/med-articles.component';
 import { DoctorsComponent } from './doctors/doctors.component';
 import { DoctorProfileComponent } from './doctor-profile/doctor-profile.component';
-import { MedServiceDescrComponent } from './med-service-descr/med-service-descr.component';
 import { FeedbackFormComponent } from './feedback-form/feedback-form.component';
 import { ArticleComponent } from './article/article.component';
 import { SlideElementComponent } from './slide-element/slide-element.component';
@@ -61,9 +60,10 @@ import { MatTableResponsiveModule } from './directives/table-directive/table-dir
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { AdmRegDoctorComponent } from './adm-reg-doctor/adm-reg-doctor.component';
 import { AdmRegUserComponent } from './adm-reg-user/adm-reg-user.component';
-import { AdmDelAppComponent } from './adm-del-app/adm-del-app.component';
 import { AdmEditAppComponent } from './adm-edit-app/adm-edit-app.component';
 import { AdmNewServiceComponent } from './adm-new-service/adm-new-service.component';
+import { AdmEditServiceComponent } from './adm-edit-service/adm-edit-service.component';
+import { AdmEditDoctorComponent } from './adm-edit-doctor/adm-edit-doctor.component';
 
 
 @NgModule({
@@ -77,7 +77,6 @@ import { AdmNewServiceComponent } from './adm-new-service/adm-new-service.compon
     MedArticlesComponent,
     DoctorsComponent,
     DoctorProfileComponent,
-    MedServiceDescrComponent,
     FeedbackFormComponent,
     ArticleComponent,
     SlideElementComponent,
@@ -92,9 +91,10 @@ import { AdmNewServiceComponent } from './adm-new-service/adm-new-service.compon
     AdminPanelComponent,
     AdmRegDoctorComponent,
     AdmRegUserComponent,
-    AdmDelAppComponent,
     AdmEditAppComponent,
     AdmNewServiceComponent,
+    AdmEditServiceComponent,
+    AdmEditDoctorComponent,
   ],
   imports: [
     BrowserModule,
