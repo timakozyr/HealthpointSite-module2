@@ -1,4 +1,5 @@
 import random
+from russian_names import RussianNames
 
 from django.core.management.base import BaseCommand
 from faker import Faker
@@ -20,11 +21,14 @@ class Command(BaseCommand):
         self.stdout.write("Generating dummy appointments")
 
         for _ in range(40):
+            first_name, patronymic_name, last_name = RussianNames().get_person().split(
+                ' ')
+
             User.objects.create_user(
                 email=fake.email(),
-                first_name=fake.first_name(),
-                last_name=fake.last_name(),
-                patronymic_name=fake.first_name(),
+                first_name=first_name,
+                last_name=last_name,
+                patronymic_name=patronymic_name,
                 city=fake.city(),
                 password="password",
             )
