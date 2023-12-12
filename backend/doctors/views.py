@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import permissions, viewsets
 
+from users.models import User
 from .models import Doctor
 from .serializers import DoctorSerializer
 
@@ -27,4 +28,11 @@ class DoctorViewSet(viewsets.ModelViewSet):
         serializer.save()
 
     def perform_destroy(self, instance):
+        user_id = instance.user_id
+
+        try:
+            instance.user.delete()
+        except User.DoesNotExist:
+            pass
+
         instance.delete()
