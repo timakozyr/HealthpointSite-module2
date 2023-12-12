@@ -48,7 +48,7 @@ class Command(BaseCommand):
                     specialization=random.choice(specializations),
                 )
 
-        users = User.objects.all()
+        users = User.objects.filter(role=Role.objects.get(name="user"))
         doctors = Doctor.objects.all()
 
         for _ in range(10):
@@ -62,7 +62,7 @@ class Command(BaseCommand):
             appointment_time = fake.time(pattern="%H:%M:%S", end_datetime=None)
             cabinet_number = fake.random_int(min=1, max=10)
 
-            appointment = Appointment.objects.create(
+            Appointment.objects.create(
                 patient=random_user,
                 doctor=random_doctor,
                 date=appointment_date,
