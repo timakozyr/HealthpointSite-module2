@@ -6,3 +6,4 @@ Pillow==10.1.0
 drf-spectacular==0.26.5
 urllib3==1.26.6
 Faker==20.1.0
+russian-names>=0.1.2,<0.2
