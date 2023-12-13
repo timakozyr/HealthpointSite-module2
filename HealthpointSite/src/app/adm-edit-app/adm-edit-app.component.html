@@ -37,7 +37,7 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Дата</mat-label>
-                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" required>
+                        <input matInput [matDatepicker]="dp3" [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" required>
                         <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
                         <mat-datepicker #dp3 disabled="false"></mat-datepicker>
                         <mat-error *ngIf="selectedDate.errors?.required">Выберите время</mat-error>

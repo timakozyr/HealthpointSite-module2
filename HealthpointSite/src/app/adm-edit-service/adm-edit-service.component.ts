@@ -19,8 +19,7 @@ export class AdmEditServiceComponent {
   change: boolean;
   specs: Specialization[];
 
-  constructor(private _api: ApiService,
-            private specService: SpecializationService,
+  constructor(private specService: SpecializationService,
             private servService: MedservicesService,
             @Inject(MAT_DIALOG_DATA) public data: any,
             public dialogRef: MatDialogRef<AdmEditServiceComponent>,

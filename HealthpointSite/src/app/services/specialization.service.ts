@@ -20,12 +20,30 @@ export class SpecializationService {
     return to_return;
   }
 
+  specToJson(spec: Specialization) {
+    return {
+      'name': spec.name,
+      'description': spec.description
+    };
+  }
+
   getSpecializations() {
     return this._api.getTypeRequest('specializations').pipe(map((res: any) => res.map(r => this.createNewSpecJson(r))));;
   }
 
   addSpecialization(spec: Specialization) {
-    return this._api.postTypeRequest('specializations', spec);
+    let b = this.specToJson(spec);
+    return this._api.postTypeRequest('specializations', b);
+  }
+
+  updateSpecialization(spec: Specialization) {
+    let b = this.specToJson(spec);
+    
+    return this._api.putTypeRequest(`specializations/${spec.id}`, b);
+  }
+
+  deleteSpecialization(id: number) {
+    return this._api.deleteTypeRequest(`specializations/${id}`);
   }
 
   getSpecializationById(id: number) {

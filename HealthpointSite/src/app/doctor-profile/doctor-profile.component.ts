@@ -37,8 +37,8 @@ export class DoctorProfileComponent {
         this.doctor = res;
         this.medService.getAllServices().subscribe(res =>
           this.services = [...res.filter(r => r.specialization == this.doctor.specialization)]);
+        this.specService.getSpecializationById(this.doctor.specialization).subscribe(res => this.spec = res.name);
       });
-      this.specService.getSpecializationById(params.id).subscribe(res => this.spec = res.name);
     });
   }
   

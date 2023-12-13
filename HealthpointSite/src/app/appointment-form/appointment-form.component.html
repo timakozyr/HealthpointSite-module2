@@ -20,11 +20,11 @@
                     <mat-form-field>
                         <mat-label>Услуга</mat-label>
                         <mat-select [(ngModel)]="appointment.medServiceId" name="selectedService" #selectedService="ngModel" required>
-                            <mat-option *ngFor="let service of (appointment.doctorId != undefined ? getServicesBySpec(appointment.doctorId) : serviceTypes)" [value]="service.id">
+                            <mat-option *ngFor="let service of serviceTypes" [value]="service.id">
                                 {{service.name}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="selectedService.errors?.required">Выберите врача</mat-error>
+                        <mat-error *ngIf="selectedService.errors?.required">Выберите услугу</mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>ФИО врача</mat-label>
@@ -37,7 +37,7 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Дата</mat-label>
-                        <input matInput [matDatepicker]="dp3" disabled [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" [min]="minDate">
+                        <input matInput [matDatepicker]="dp3" [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" [min]="minDate">
                         <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
                         <mat-datepicker #dp3 disabled="false"></mat-datepicker>
                     </mat-form-field>

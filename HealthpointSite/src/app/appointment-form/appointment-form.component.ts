@@ -56,11 +56,6 @@ export class AppointmentFormComponent {
     return this.doctors.filter(d => d.specialization == specId);
   }
 
-  getServicesBySpec(doctorId) {
-    let specId = this.doctors.find(d => d.doctorId == doctorId)?.specialization;
-    return this.serviceTypes.filter(s => s.specialization == specId);
-  }
-
   getPatients() {
     return this.patients;
   }
@@ -78,6 +73,7 @@ export class AppointmentFormComponent {
       if (this.data != null && this.data.doctorId != undefined) {
         this.appointment.doctorId = this.data.doctorId;
       };
+
       this.medService.getAllServices().subscribe(res => {
         this.serviceTypes = [...res.filter(s => this.doctors.find(d => d.specialization == s.specialization))];
         if (this.data != null && this.data.serviceId != undefined) {

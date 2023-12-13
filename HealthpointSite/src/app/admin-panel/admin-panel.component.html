@@ -17,10 +17,12 @@
             <button mat-raised-button on-click="openRegForm(false)">Новый пациент</button>
             <button mat-raised-button on-click="openRegForm(true)">Новый врач</button>
             <button mat-raised-button on-click="openNewServiceForm()">Новая услуга</button>
+            <button mat-raised-button on-click="openNewSpecForm()">Новая специализация</button>
             <mat-radio-group [(ngModel)]="showType">
                 <mat-radio-button [value]="1">Услуги</mat-radio-button>
                 <mat-radio-button [value]="2">Записи</mat-radio-button>
                 <mat-radio-button [value]="3">Врачи</mat-radio-button>
+                <mat-radio-button [value]="4">Специализации</mat-radio-button>
             </mat-radio-group>
 
             <!-- SERVICES TABLE -->
@@ -125,6 +127,31 @@
             
                 <tr mat-header-row *matHeaderRowDef="doctorsColumns; sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: doctorsColumns;"></tr>
+
+              </table>
+
+              <!-- SPECS TABLE -->
+              <table *ngIf="showType == 4" mat-table matSort matTableResponsive [dataSource]="specs" >
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Название</th>
+                  <td mat-cell *matCellDef="let spec">{{spec.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef>Описание</th>
+                  <td mat-cell *matCellDef="let spec">{{spec.description}}</td>
+                </ng-container>
+            
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td mat-cell *matCellDef="let spec">
+                    <button mat-flat-button on-click="openEditSpecForm(spec.id)"><mat-icon>edit</mat-icon> Изменить</button>
+                  </td>
+                </ng-container>
+            
+                <tr mat-header-row *matHeaderRowDef="specsColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: specsColumns;"></tr>
 
               </table>
           </mat-card-content>

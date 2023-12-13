@@ -64,6 +64,8 @@ import { AdmEditAppComponent } from './adm-edit-app/adm-edit-app.component';
 import { AdmNewServiceComponent } from './adm-new-service/adm-new-service.component';
 import { AdmEditServiceComponent } from './adm-edit-service/adm-edit-service.component';
 import { AdmEditDoctorComponent } from './adm-edit-doctor/adm-edit-doctor.component';
+import { AdmNewSpecComponent } from './adm-new-spec/adm-new-spec.component';
+import { AdmEditSpecComponent } from './adm-edit-spec/adm-edit-spec.component';
 
 
 @NgModule({
@@ -95,6 +97,8 @@ import { AdmEditDoctorComponent } from './adm-edit-doctor/adm-edit-doctor.compon
     AdmNewServiceComponent,
     AdmEditServiceComponent,
     AdmEditDoctorComponent,
+    AdmNewSpecComponent,
+    AdmEditSpecComponent,
   ],
   imports: [
     BrowserModule,

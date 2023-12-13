@@ -21,6 +21,8 @@ import { AdmEditServiceComponent } from '../adm-edit-service/adm-edit-service.co
 import { AdmEditDoctorComponent } from '../adm-edit-doctor/adm-edit-doctor.component';
 import { formatDate } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AdmNewSpecComponent } from '../adm-new-spec/adm-new-spec.component';
+import { AdmEditSpecComponent } from '../adm-edit-spec/adm-edit-spec.component';
 
 @Component({
   selector: 'app-admin-panel',
@@ -33,6 +35,7 @@ export class AdminPanelComponent implements OnInit {
   doctorsColumns: string[] = ['name', 'specialization', 'actions'];
   appointmentColumns: string[] = ['date', 'medService', 'doctorType', 'doctor', 'patient', 'actions'];
   servicesColumns: string[] = ['name', 'category', 'actions'];
+  specsColumns: string[] = ['name', 'description', 'actions'];
   services: MedService[];
   doctors: Doctor[];
   appointments: Appointment[];
@@ -105,6 +108,28 @@ export class AdminPanelComponent implements OnInit {
 
   getServiceById(id: number) {
     return this.services.find(el => el.id === id);
+  }
+
+  openNewSpecForm() {
+    let dialogRef = this.dialog.open(AdmNewSpecComponent, {width: '600px', height: '600px'});
+
+    dialogRef.afterClosed().subscribe(() => {
+      if (dialogRef.componentInstance.spec.id != 0) {
+        this.specs = [...this.specs, dialogRef.componentInstance.spec];
+      }
+    })
+  }
+
+  openEditSpecForm(specId: number) {
+    let spec = this.specs.find(s => s.id == specId);
+
+    let dialogRef = this.dialog.open(AdmEditSpecComponent, {width: '600px', height: '600px', data: {spec: spec}});
+
+    dialogRef.afterClosed().subscribe(() => {
+      if (dialogRef.componentInstance.change) {
+        this.specs = [...this.specs.filter(spec => spec.id != specId), dialogRef.componentInstance.spec];
+      }
+    });
   }
 
   openNewAppForm() {
@@ -192,6 +217,15 @@ export class AdminPanelComponent implements OnInit {
         duration: 3000
       });
     });
+  }
+
+  deleteSpec(id: number) {
+    this.specService.deleteSpecialization(id).subscribe(_ => {
+      this.specs = [...this.specs.filter(s => s.id != id)];
+      this.snackBar.open('Успешно удалено!', 'Скрыть', {
+        duration: 3000
+      });
+    })
   }
 
   getDateString(date: Date, time: string) {
