@@ -4,6 +4,7 @@ from faker import Faker
 from services.models import Service
 from specializations.models import Specialization
 
+
 fake = Faker("ru_RU")
 
 
@@ -17,8 +18,7 @@ class Command(BaseCommand):
             ["Эхокардиография", "Коронарография"],
             ["Химиотерапия", "Радиотерапия"],
             ["Вакцинация", "Консультация по грудному вскармливанию"],
-            ["Электроэнцефалография (ЭЭГ)",
-             "Магнитно-резонансная томография (МРТ)"],
+            ["Электроэнцефалография (ЭЭГ)", "Магнитно-резонансная томография (МРТ)"],
             ["Фиброгастродуоденоскопия (ФГДС)", "Колоноскопия"],
             ["Артроскопия", "Протезирование суставов"],
             ["УЗИ органов малого таза", "Кольпоскопия"],
@@ -82,5 +82,4 @@ class Command(BaseCommand):
                     )
                 index += 1
 
-        self.stdout.write(
-            self.style.SUCCESS("Dummy services generated successfully!"))
+        self.stdout.write(self.style.SUCCESS("Dummy services generated successfully!"))

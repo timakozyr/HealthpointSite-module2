@@ -1,8 +1,8 @@
 import random
-from russian_names import RussianNames
 
 from django.core.management.base import BaseCommand
 from faker import Faker
+from russian_names import RussianNames
 
 from appointments.models import Appointment
 from doctors.models import Doctor
@@ -10,6 +10,7 @@ from roles.models import Role
 from services.models import Service
 from specializations.models import Specialization
 from users.models import User
+
 
 fake = Faker("ru_RU")
 
@@ -21,8 +22,9 @@ class Command(BaseCommand):
         self.stdout.write("Generating dummy appointments")
 
         for _ in range(40):
-            first_name, patronymic_name, last_name = RussianNames().get_person().split(
-                ' ')
+            first_name, patronymic_name, last_name = (
+                RussianNames().get_person().split(" ")
+            )
 
             User.objects.create_user(
                 email=fake.email(),
@@ -36,7 +38,7 @@ class Command(BaseCommand):
         total_users_count = User.objects.count()
 
         offset = random.randint(0, total_users_count - 20)
-        users = User.objects.all()[offset: offset + 20]
+        users = User.objects.all()[offset : offset + 20]
 
         if not Doctor.objects.exists():
             specializations = Specialization.objects.all()
@@ -55,10 +57,10 @@ class Command(BaseCommand):
             random_user = random.choice(users)
             random_doctor = random.choice(doctors)
             services = Service.objects.filter(
-                specialization=random_doctor.specialization)
+                specialization=random_doctor.specialization
+            )
             random_service = random.choice(services)
-            appointment_date = fake.date_between(start_date="+1d",
-                                                 end_date="+30d")
+            appointment_date = fake.date_between(start_date="+1d", end_date="+30d")
             appointment_time = fake.time(pattern="%H:%M:%S", end_datetime=None)
             cabinet_number = fake.random_int(min=1, max=10)
 
