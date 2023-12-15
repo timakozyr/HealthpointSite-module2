@@ -12,7 +12,7 @@ from users.models import User
 class ServiceViewSetTest(APITestCase):
     def setUp(self):
         self.specialization = Specialization.objects.create(name="Test Specialization")
-        self.user_role = Role.objects.create(id=1, name="user")
+        self.user_role = Role.objects.create(id=2, name="admin")
 
         self.service1 = Service.objects.create(
             name="Service 1",
@@ -27,7 +27,7 @@ class ServiceViewSetTest(APITestCase):
             logo="logo.jpg",
         )
 
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             email="user@example.com",
             first_name="John",
             last_name="Doe",
