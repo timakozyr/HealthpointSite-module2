@@ -23,4 +23,6 @@ class Command(BaseCommand):
             role=role,
         )
 
-        self.stdout.write(self.style.SUCCESS(f"Superuser created: {user.email}"))
+        self.stdout.write(
+            self.style.SUCCESS(f"Superuser created: {user.email}")
+        )

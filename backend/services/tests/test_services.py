@@ -6,7 +6,9 @@ from specializations.models import Specialization
 
 class ServiceModelTest(TestCase):
     def setUp(self):
-        self.specialization = Specialization.objects.create(name="Test Specialization")
+        self.specialization = Specialization.objects.create(
+            name="Test Specialization"
+        )
 
     def create_service(self):
         return Service.objects.create(

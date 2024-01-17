@@ -29,7 +29,9 @@ class LoginSignupAPITestCase(APITestCase):
 
         self.assertIn("user", response.data)
         self.assertIn("email", response.data["user"])
-        self.assertEqual(response.data["user"]["email"], self.user_data["email"])
+        self.assertEqual(
+            response.data["user"]["email"], self.user_data["email"]
+        )
 
     def test_login_api(self):
         response = self.client.post(self.signup_url, data=self.user_data)

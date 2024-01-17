@@ -26,7 +26,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "password",
+                    models.CharField(max_length=128, verbose_name="password"),
+                ),
                 (
                     "last_login",
                     models.DateTimeField(
@@ -35,7 +38,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email",
-                    models.EmailField(max_length=60, unique=True, verbose_name="email"),
+                    models.EmailField(
+                        max_length=60, unique=True, verbose_name="email"
+                    ),
                 ),
                 ("first_name", models.CharField(max_length=30)),
                 ("last_name", models.CharField(max_length=30)),
@@ -44,7 +49,9 @@ class Migration(migrations.Migration):
                 (
                     "profile_pic",
                     models.ImageField(
-                        blank=True, default="default-pfp.jpg", upload_to="profile_pic"
+                        blank=True,
+                        default="default-pfp.jpg",
+                        upload_to="profile_pic",
                     ),
                 ),
                 ("is_admin", models.BooleanField(default=False)),

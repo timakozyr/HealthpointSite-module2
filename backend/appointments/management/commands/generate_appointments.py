@@ -1,10 +1,11 @@
 import random
+from datetime import datetime, timedelta
 
 from django.core.management.base import BaseCommand
 from faker import Faker
 from russian_names import RussianNames
 
-from appointments.models import Appointment
+from appointments.models import Appointment, TimeBlock
 from doctors.models import Doctor
 from roles.models import Role
 from services.models import Service
@@ -53,15 +54,26 @@ class Command(BaseCommand):
         users = User.objects.filter(role=Role.objects.get(name="user"))
         doctors = Doctor.objects.all()
 
-        for _ in range(10):
+        start_time = datetime.strptime("10:00", "%H:%M").time()
+        end_time = datetime.strptime("17:00", "%H:%M").time()
+        current_time = datetime.combine(datetime.today(), start_time)
+        interval = timedelta(minutes=30)
+
+        while current_time.time() <= end_time:
+            TimeBlock.objects.create(start_time=current_time.time())
+            current_time += interval
+
+        for _ in range(100):
             random_user = random.choice(users)
             random_doctor = random.choice(doctors)
             services = Service.objects.filter(
                 specialization=random_doctor.specialization
             )
             random_service = random.choice(services)
-            appointment_date = fake.date_between(start_date="+1d", end_date="+30d")
-            appointment_time = fake.time(pattern="%H:%M:%S", end_datetime=None)
+            appointment_date = fake.date_between(
+                start_date="+1d", end_date="+30d"
+            )
+            appointment_time = TimeBlock.objects.order_by("?").first()
             cabinet_number = fake.random_int(min=1, max=10)
 
             Appointment.objects.create(

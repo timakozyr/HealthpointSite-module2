@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Appointment
+from .models import Appointment, TimeBlock
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "cabinet",
             "service",
         ]
+
+
+class TimeBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimeBlock
+        fields = ["id", "start_time"]

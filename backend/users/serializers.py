@@ -26,12 +26,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if "password" in validated_data:
-            validated_data["password"] = make_password(validated_data["password"])
+            validated_data["password"] = make_password(
+                validated_data["password"]
+            )
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         if self.context["request"].method == "GET":
-            self.fields["role"] = serializers.PrimaryKeyRelatedField(read_only=True)
+            self.fields["role"] = serializers.PrimaryKeyRelatedField(
+                read_only=True
+            )
         return super().to_representation(instance)
 
 

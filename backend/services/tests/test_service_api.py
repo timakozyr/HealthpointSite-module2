@@ -11,7 +11,9 @@ from users.models import User
 
 class ServiceViewSetTest(APITestCase):
     def setUp(self):
-        self.specialization = Specialization.objects.create(name="Test Specialization")
+        self.specialization = Specialization.objects.create(
+            name="Test Specialization"
+        )
         self.user_role = Role.objects.create(id=2, name="admin")
 
         self.service1 = Service.objects.create(

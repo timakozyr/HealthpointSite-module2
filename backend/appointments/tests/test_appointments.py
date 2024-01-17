@@ -18,7 +18,9 @@ class AppointmentAPITest(APITestCase):
         self.user_role = Role.objects.create(id=1, name="user")
         self.doctor_role = Role.objects.create(id=3, name="doctor")
         self.admin_role = Role.objects.create(id=2, name="admin")
-        self.specialization = Specialization.objects.create(name="Test Specialization")
+        self.specialization = Specialization.objects.create(
+            name="Test Specialization"
+        )
 
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -107,7 +109,9 @@ class AppointmentAPITest(APITestCase):
         self.client.force_login(self.user)
         response1 = self.client.post(url, data, format="json")
 
-        url = reverse("appointments-detail", kwargs={"pk": response1.data["id"]})
+        url = reverse(
+            "appointments-detail", kwargs={"pk": response1.data["id"]}
+        )
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
         response = self.client.get(url)
@@ -177,9 +181,13 @@ class AppointmentAPITest(APITestCase):
 
         self.token_admin = Token.objects.create(user=admin)
 
-        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_admin.key)
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_admin.key
+        )
 
-        url = reverse("appointments-detail", kwargs={"pk": response.data["id"]})
+        url = reverse(
+            "appointments-detail", kwargs={"pk": response.data["id"]}
+        )
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

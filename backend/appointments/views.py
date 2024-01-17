@@ -1,11 +1,14 @@
+import datetime
+
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from doctors.models import Doctor
 from users.models import User
 
-from .models import Appointment
-from .serializers import AppointmentSerializer
+from .models import Appointment, TimeBlock
+from .serializers import AppointmentSerializer, TimeBlockSerializer
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -28,7 +31,9 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         if self.request.user.is_admin:
             return Appointment.objects.all()
         if Doctor.objects.filter(user_id=self.request.user.id).exists():
-            return Appointment.objects.filter(doctor__user_id=self.request.user.id)
+            return Appointment.objects.filter(
+                doctor__user_id=self.request.user.id
+            )
 
         return Appointment.objects.filter(patient=self.request.user)
 
@@ -36,16 +41,26 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             appointment_patient = serializer.validated_data.get("patient").id
+            date = serializer.validated_data.get("date")
+            time = serializer.validated_data.get("time")
 
             patient = User.objects.get(id=appointment_patient)
 
-            if not request.user.is_admin and appointment_patient != request.user.id:
+            if (
+                not request.user.is_admin
+                and appointment_patient != request.user.id
+            ):
                 return Response(
-                    {"detail": "You can only create appointments for yourself."},
+                    {
+                        "detail": "You can only create appointments for yourself."
+                    },
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-            if appointment_patient == serializer.validated_data.get("doctor").user.id:
+            if (
+                appointment_patient
+                == serializer.validated_data.get("doctor").user.id
+            ):
                 return Response(
                     {"detail": "You can not make appointment to yourself"},
                     status=status.HTTP_403_FORBIDDEN,
@@ -57,6 +72,18 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
+            if time > datetime.time(16, 59) or time < datetime.time(10, 0):
+                return Response(
+                    {"detail": "You can visit doctor from 10:00 to 17:00."},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+
+            if date.weekday() > 4:
+                return Response(
+                    {"detail": "You can not visit doctor on weekend."},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -64,12 +91,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if not request.user.is_admin and appointment.patient.id != request.user.id:
+        if (
+            not request.user.is_admin
+            and appointment.patient.id != request.user.id
+        ):
             return Response(
                 {"detail": "You can only edit your own appointments."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        serializer = self.serializer_class(appointment, data=request.data, partial=True)
+        serializer = self.serializer_class(
+            appointment, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -77,10 +109,29 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None, *args, **kwargs):
         appointment = self.get_object()
-        if not request.user.is_admin and appointment.patient.id != request.user.id:
+        if (
+            not request.user.is_admin
+            and appointment.patient.id != request.user.id
+        ):
             return Response(
                 {"detail": "You can only delete your own appointments."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         appointment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AvailableTimeBlocks(APIView):
+    def get(self, request, doctor_id, date):
+        appointments = Appointment.objects.filter(doctor=doctor_id, date=date)
+        booked_time_blocks = [
+            appointment.time.id for appointment in appointments
+        ]
+
+        all_time_blocks = TimeBlock.objects.all()
+        available_time_blocks = all_time_blocks.exclude(
+            id__in=booked_time_blocks
+        )
+
+        serializer = TimeBlockSerializer(available_time_blocks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
