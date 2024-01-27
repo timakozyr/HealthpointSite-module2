@@ -78,7 +78,6 @@ export class AppointmentFormComponent {
 
     this.appointmentService.getAppointmentSlots(doctorId, formatDate(date, 'yyyy-MM-dd', this.locale)).subscribe(res => this.slots = [...res]);
     if (this.slots.findIndex(slot => slot.id == this.appointment.time) == -1 && this.slots.length > 0) {
-      console.log(this.slots);
       this.appointment.time = this.slots[0].id;
     }
   }
