@@ -8,5 +8,5 @@ export class Appointment {
     medService: string = '';
     cabinet: number = 0;
     date: Date = new Date();
-    time: string = (new Date()).toLocaleTimeString('ru-RU', { hour: 'numeric', minute: 'numeric' });
+    time: number = 1; //string = (new Date()).toLocaleTimeString('ru-RU', { hour: 'numeric', minute: 'numeric' });
 }

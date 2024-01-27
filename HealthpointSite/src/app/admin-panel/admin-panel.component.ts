@@ -23,6 +23,7 @@ import { formatDate } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdmNewSpecComponent } from '../adm-new-spec/adm-new-spec.component';
 import { AdmEditSpecComponent } from '../adm-edit-spec/adm-edit-spec.component';
+import { TimeSlot } from '../models/timeslot';
 
 @Component({
   selector: 'app-admin-panel',
@@ -229,6 +230,6 @@ export class AdminPanelComponent implements OnInit {
   }
 
   getDateString(date: Date, time: string) {
-    return formatDate(date, 'yyyy-MM-dd ', this.locale) + time;
+    return formatDate(date, 'yyyy-MM-dd ', this.locale) + TimeSlot.getTimeBySlot(time);
   }
 }

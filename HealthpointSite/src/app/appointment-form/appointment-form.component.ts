@@ -12,6 +12,10 @@ import { AppointmentService } from '../services/appointment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { User, UserProfile } from '../models/user';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { formatDate } from '@angular/common';
+import { TimeSlot } from '../models/timeslot';
+
 
 
 @Component({
@@ -29,8 +33,16 @@ export class AppointmentFormComponent {
   user: User;
   patients: User[];
   minDate: Date;
+  slots: TimeSlot[];
+
+  weekendFilter: DateFilterFn<Date | null> = (d: Date| null): boolean => {
+    const day = d?.getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  }
 
   constructor(
+    @Inject(LOCALE_ID) private locale: string,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<AppointmentFormComponent>,
     public doctorsService: DoctorsService,
@@ -47,6 +59,7 @@ export class AppointmentFormComponent {
     this.doctors = [];
     this.appointment = new Appointment;
     this.user = new User;
+    this.slots = [];
   }
 
   checkUser = () => UserService.checkUser();
@@ -58,6 +71,16 @@ export class AppointmentFormComponent {
 
   getPatients() {
     return this.patients;
+  }
+
+  getSlots(doctorId, date) {
+    if (doctorId == undefined || date == undefined) return;
+
+    this.appointmentService.getAppointmentSlots(doctorId, formatDate(date, 'yyyy-MM-dd', this.locale)).subscribe(res => this.slots = [...res]);
+    if (this.slots.findIndex(slot => slot.id == this.appointment.time) == -1 && this.slots.length > 0) {
+      console.log(this.slots);
+      this.appointment.time = this.slots[0].id;
+    }
   }
 
   ngOnInit(): void {
@@ -90,6 +113,9 @@ export class AppointmentFormComponent {
 
     if (UserService.checkUser() && UserService.CurrentUser.profile == UserProfile.admin)
       this.userService.getAllUsers().subscribe(res => this.patients = [...res]);
+    
+    if (this.appointment.doctorId != undefined && this.appointment.date != undefined)
+      this.slots = TimeSlot.getAllTimeSlots();
   }
 
   onSubmit(): void {

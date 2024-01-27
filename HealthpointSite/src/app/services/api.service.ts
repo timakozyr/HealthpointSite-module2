@@ -11,7 +11,7 @@ export class ApiService {
  
  
   private REST_API_SERVER = "http://localhost:8000/api/"; 
-  constructor(private httpClient: HttpClient, private _auth: AuthService) { } 
+  constructor(private httpClient: HttpClient) { } 
 
 
   getTypeRequest(url) {

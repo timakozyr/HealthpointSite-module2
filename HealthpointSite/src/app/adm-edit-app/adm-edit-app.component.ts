@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { User, UserProfile } from '../models/user';
 import { Specialization } from '../models/specialization';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -12,6 +12,9 @@ import { DoctorsService } from '../services/doctors.service';
 import { MedservicesService } from '../services/medservices.service';
 import { SpecializationService } from '../services/specialization.service';
 import { UserService } from '../services/user.service';
+import { TimeSlot } from '../models/timeslot';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-adm-edit-app',
@@ -29,8 +32,16 @@ export class AdmEditAppComponent {
   patients: User[];
   currentUser: User;
   change: boolean;
+  slots: TimeSlot[];
+
+  weekendFilter: DateFilterFn<Date | null> = (d: Date| null): boolean => {
+    const day = d?.getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  }
 
   constructor(
+    @Inject(LOCALE_ID) private locale: string,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<AdmEditAppComponent>,
     public doctorsService: DoctorsService,
@@ -60,6 +71,16 @@ export class AdmEditAppComponent {
     return this.patients;
   }
 
+  getSlots(doctorId, date) {
+    if (doctorId == undefined || date == undefined) return;
+
+    this.appointmentService.getAppointmentSlots(doctorId, formatDate(date, 'yyyy-MM-dd', this.locale)).subscribe(res => {
+      this.slots = [...res];
+      if (this.slots.findIndex(slot => slot.id == this.appointment.time) == -1)
+      this.appointment.time = this.slots[0].id;
+    });
+  }
+
   ngOnInit(): void {
     this.currentUser = UserService.CurrentUser;
     this.appointment = new Appointment;
@@ -77,6 +98,7 @@ export class AdmEditAppComponent {
       this.appointment.medServiceId = this.data.app.medServiceId;
       this.appointment.medService = this.data.app.medService;
       this.appointment.time = this.data.app.time;
+      this.slots = TimeSlot.getAllTimeSlots();
       if (this.currentUser.profile == UserProfile.admin)
         this.userService.getUserById(this.appointment.patientId).subscribe(res => this.user = res);
     }
@@ -84,6 +106,7 @@ export class AdmEditAppComponent {
     if (UserService.checkUser() && UserService.CurrentUser.profile == UserProfile.admin) {
       this.userService.getAllUsers().subscribe(res => this.patients = [...res]);
     }
+    
 
     this.change = false;
   }

@@ -37,14 +37,19 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Дата</mat-label>
-                        <input matInput [matDatepicker]="dp3" [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" required>
+                        <input matInput [matDatepicker]="dp3" [matDatepickerFilter]="weekendFilter" [(ngModel)]="appointment.date" name="selectedDate" #selectedDate="ngModel" (ngModelChange)="getSlots(appointment.doctorId, appointment.date)" required>
                         <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
                         <mat-datepicker #dp3 disabled="false"></mat-datepicker>
-                        <mat-error *ngIf="selectedDate.errors?.required">Выберите время</mat-error>
+                        <mat-error *ngIf="!weekendFilter(appointment.date)">Выберите верную дату (будний день)</mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Время</mat-label>
-                        <input matInput type="time" step="60" [(ngModel)]="appointment.time" placeholder="HH:mm" name="selectedTime" #selectedTime="ngModel" required>
+                        <mat-select [(ngModel)]="appointment.time" name="time" #time="ngModel" required>
+                            <mat-option *ngFor="let slot of slots" [value]="slot.id">
+                                {{slot.start_time}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="time.errors?.required">Выберите время</mat-error>
                     </mat-form-field>
                 </div>
             </mat-dialog-content>

@@ -72,12 +72,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-            if time > datetime.time(16, 59) or time < datetime.time(10, 0):
-                return Response(
-                    {"detail": "You can visit doctor from 10:00 to 17:00."},
-                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                )
-
             if date.weekday() > 4:
                 return Response(
                     {"detail": "You can not visit doctor on weekend."},

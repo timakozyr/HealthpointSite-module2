@@ -14,6 +14,7 @@ import { AppointmentFormComponent } from '../appointment-form/appointment-form.c
 import { AdmEditAppComponent } from '../adm-edit-app/adm-edit-app.component';
 import { formatDate } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TimeSlot } from '../models/timeslot';
 
 @Component({
   selector: 'app-appointments',
@@ -125,8 +126,8 @@ export class AppointmentsListComponent {
     return user;
   }
 
-  getDateString(date: Date, time: string) {
-    return formatDate(date, 'yyyy-MM-dd ', this.locale) + time;
+  getDateString(date: Date, time: number) {
+    return formatDate(date, 'yyyy-MM-dd ', this.locale) + TimeSlot.getTimeBySlot(time);
   }
 }
 

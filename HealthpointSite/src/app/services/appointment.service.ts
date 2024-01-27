@@ -2,7 +2,8 @@ import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { ApiService } from './api.service';
 import { Appointment } from '../models/appointment';
 import { Observable, map } from 'rxjs';
-import { formatDate } from '@angular/common';
+import { Time, formatDate } from '@angular/common';
+import { TimeSlot } from '../models/timeslot';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,14 @@ export class AppointmentService {
     return to_return;
   }
 
+  createNewTimeSlotJson(input: any) {
+    var to_return = new TimeSlot;
+    to_return.id = input.id;
+    to_return.start_time = input.start_time;
+
+    return to_return;
+  }
+
   appointmentToJson(appointment: Appointment) {
     return {
       "patient": appointment.patientId,
@@ -38,6 +47,10 @@ export class AppointmentService {
 
   getAllAppointments() : Observable<Appointment[]> {
     return this._api.getTypeRequest('appointments').pipe(map((res: any) => res.map(r => this.createNewAppointmentJson(r))));
+  }
+
+  getAppointmentSlots(doctorId, date) : Observable<TimeSlot[]> {
+    return this._api.getTypeRequest(`appointments/slots/${doctorId}/${date}`).pipe(map((res: any) => res.map(r => this.createNewTimeSlotJson(r))));
   }
 
   getAppointmentById(id: number) : Observable<Appointment> {
