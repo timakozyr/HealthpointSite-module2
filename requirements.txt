@@ -6,4 +6,7 @@ Pillow==10.1.0
 drf-spectacular==0.26.5
 urllib3==1.26.6
 Faker==20.1.0
-russian-names>=0.1.2,<0.2
+russian-names>=0.1.2,<0.2torchxrayvision==1.2.2
+numpy==1.26.4
+django-cors-headers==4.3.1
+torchxrayvision==1.2.2

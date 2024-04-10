@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "appointments",
     "doctors",
     "authentication",
+    "artificial_intelligence",
     # Third-party apps
     "rest_framework",
     "rest_framework.authtoken",

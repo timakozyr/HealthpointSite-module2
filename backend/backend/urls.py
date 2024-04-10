@@ -15,6 +15,7 @@ urlpatterns = [
     path("api/specializations/", include("specializations.urls")),
     path("api/doctors/", include("doctors.urls")),
     path("api/auth/", include("authentication.urls")),
+    path("api/prediction/", include("artificial_intelligence.urls"))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 swagger = [

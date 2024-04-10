@@ -2,18 +2,18 @@
 
 rm db.sqlite3
 
-python manage.py makemigrations
+python3 manage.py makemigrations
 
-python manage.py migrate
+python3 manage.py migrate
 
-python manage.py generate_roles
+python3 manage.py generate_roles
 
-python manage.py generate_specializations
+python3 manage.py generate_specializations
 
-python manage.py generate_services
+python3 manage.py generate_services
 
-python manage.py generate_appointments
+python3 manage.py generate_appointments
 
-python manage.py generate_admin
+python3 manage.py generate_admin
 
 echo "All commands executed."
